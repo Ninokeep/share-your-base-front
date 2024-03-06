@@ -37,7 +37,14 @@
                 <FormMessage />
               </FormItem>
             </FormField>
-            <Button type="submit" class="w-full" :disabled="isSubmitting">
+            <Button
+              type="submit"
+              class="w-full"
+              :disabled="
+                isSubmitting ||
+                !(isFieldDirty('email') && isFieldDirty('password'))
+              "
+            >
               <Loader2 class="w-4 h-4 mr-2 animate-spin" v-if="isSubmitting" />
               <template v-else>Login</template>
             </Button>
@@ -79,9 +86,11 @@ const formSchema = toTypedSchema(
   })
 );
 
-const { handleSubmit, isSubmitting, resetForm } = useForm({
-  validationSchema: formSchema,
-});
+const { handleSubmit, isSubmitting, resetForm, values, isFieldDirty } = useForm(
+  {
+    validationSchema: formSchema,
+  }
+);
 
 const onSubmit = handleSubmit(
   async (values) => {
@@ -102,9 +111,7 @@ const onSubmit = handleSubmit(
     }
     resetForm();
   },
-  async (err) => {
-    alert(JSON.stringify(err, null, 2));
-  }
+  async (err) => {}
 );
 
 function displayToast() {
