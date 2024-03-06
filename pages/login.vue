@@ -1,7 +1,7 @@
 <template>
   <div class="h-screen">
     <div class="flex h-screen">
-      <div class="flex-1">
+      <div class="flex-1 lg:block hidden">
         <div class="img-left__background z-40"></div>
         <div class="img-left__overlay"></div>
         <h1
@@ -10,10 +10,7 @@
           Build and Share your base
         </h1>
       </div>
-      <div
-        class="flex-1 flex flex-col justify-center px-5"
-        style="padding: 0 5rem 0 15rem"
-      >
+      <div class="flex-1 flex flex-col justify-center px-5">
         <div class="pb-9">
           <h3 class="text-5xl capitalize bold">welcome back</h3>
         </div>
@@ -40,7 +37,10 @@
                 <FormMessage />
               </FormItem>
             </FormField>
-            <Button type="submit" class="w-full"> Login </Button>
+            <Button type="submit" class="w-full" :disabled="isSubmitting">
+              <Loader2 class="w-4 h-4 mr-2 animate-spin" v-if="isSubmitting" />
+              <template v-else>Login</template>
+            </Button>
           </form>
         </div>
         <p class="text-center text-gray-400">
@@ -49,6 +49,7 @@
         </p>
       </div>
     </div>
+    <Toaster />
   </div>
 </template>
 
@@ -57,7 +58,6 @@ import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
 import { useForm } from "vee-validate";
 import { Button } from "@/components/ui/button";
-import { ref } from "vue";
 import {
   FormControl,
   FormField,
@@ -66,6 +66,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Loader2 } from "lucide-vue-next";
+import { useToast } from "@/components/ui/toast/use-toast";
+import { ToastAction, Toaster } from "@/components/ui/toast";
+import { h } from "vue";
+const { toast } = useToast();
+
 const formSchema = toTypedSchema(
   z.object({
     email: z.string().email({ message: "The email format is wrong !" }),
@@ -73,19 +79,49 @@ const formSchema = toTypedSchema(
   })
 );
 
-const form = useForm({
+const { handleSubmit, isSubmitting, resetForm } = useForm({
   validationSchema: formSchema,
 });
 
-function onSubmit(values: any) {
-  console.log("Form submitted!", values);
-  setShowPassword();
-}
+const onSubmit = handleSubmit(
+  async (values) => {
+    try {
+      const resultLogin = await $fetch(
+        "http://localhost:8888/api/v1/auth/login",
+        {
+          method: "POST",
+          body: {
+            email: values.email,
+            password: values.password,
+          },
+        }
+      );
+    } catch (err: any) {
+      displayToast();
+      console.log("erreur ici");
+    }
+    resetForm();
+  },
+  async (err) => {
+    alert(JSON.stringify(err, null, 2));
+  }
+);
 
-let showPassword = ref(false);
-
-function setShowPassword() {
-  showPassword.value = !showPassword.value;
+function displayToast() {
+  return toast({
+    title: "Email or password is wrong",
+    description: "Can check your password or email and retry",
+    variant: "destructive",
+    action: h(
+      ToastAction,
+      {
+        altText: "Try again",
+      },
+      {
+        default: () => "Try again",
+      }
+    ),
+  });
 }
 </script>
 
