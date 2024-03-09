@@ -10,12 +10,12 @@
           Build and Share your base
         </h1>
       </div>
-      <div class="flex-1 flex flex-col justify-center px-5">
-        <div class="pb-9">
+      <div class="flex-1 flex flex-col justify-center items-center">
+        <div class="pb-9 w-4/5">
           <h3 class="text-5xl capitalize bold">welcome back</h3>
         </div>
 
-        <div class="pb-5">
+        <div class="pb-5 w-4/5">
           <form @submit="onSubmit">
             <FormField v-slot="{ componentField }" name="email">
               <FormItem class="pb-5">
