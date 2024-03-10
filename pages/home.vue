@@ -17,7 +17,7 @@ import { NuxtLink } from '#build/components';
       >
       <NuxtLink
         class="px-10 py-6 mx-4 rounded-xl text-white"
-        to="/login"
+        to="/register"
         style="background-color: #001026"
         >I'm new</NuxtLink
       >

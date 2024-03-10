@@ -12,24 +12,34 @@
       </div>
       <div class="flex-1 flex flex-col justify-center items-center">
         <div class="pb-9 w-4/5">
-          <h3 class="text-5xl capitalize bold">welcome back</h3>
+          <h3 class="text-5xl capitalize bold">Get started</h3>
+          <p class="text-gray-400 bold pt-2">Create your account now</p>
         </div>
 
         <div class="pb-5 w-4/5">
           <form @submit="onSubmit">
+            <FormField v-slot="{ componentField }" name="username">
+              <FormItem class="pb-3">
+                <FormLabel class="text-gray-400 extrabold">Username</FormLabel>
+                <FormControl>
+                  <Input type="text" v-bind="componentField" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+
             <FormField v-slot="{ componentField }" name="email">
-              <FormItem class="pb-5">
+              <FormItem class="pb-3">
                 <FormLabel class="text-gray-400 extrabold">Email</FormLabel>
                 <FormControl>
                   <Input type="text" v-bind="componentField" />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             </FormField>
 
             <FormField v-slot="{ componentField }" name="password">
-              <FormItem class="pb-8">
+              <FormItem class="pb-3">
                 <FormLabel class="text-gray-400 extrabold">Password</FormLabel>
                 <FormControl>
                   <Input type="password" v-bind="componentField" />
@@ -37,6 +47,22 @@
                 <FormMessage />
               </FormItem>
             </FormField>
+
+            <FormField v-slot="{ componentField }" name="confirmPassword">
+              <FormItem class="pb-8">
+                <FormLabel class="text-gray-400 extrabold"
+                  >Confirm password</FormLabel
+                >
+                <FormControl>
+                  <Input type="password" v-bind="componentField" />
+                </FormControl>
+                <FormMessage />
+                <span v-if="errors.confirmPassword === 'passwordMatch'"
+                  >Passwords do not match</span
+                >
+              </FormItem>
+            </FormField>
+
             <Button
               type="submit"
               class="w-full"
@@ -46,13 +72,13 @@
               "
             >
               <Loader2 class="w-4 h-4 mr-2 animate-spin" v-if="isSubmitting" />
-              <template v-else>Login</template>
+              <template v-else>Sign up</template>
             </Button>
           </form>
         </div>
         <p class="text-center text-gray-400">
-          Not again an account ?
-          <span class="text-black bold">Sign up</span>
+          Have an account ?
+          <span class="text-black bold">Login</span>
         </p>
       </div>
     </div>
@@ -62,6 +88,8 @@
 
 <script setup lang="ts">
 import { toTypedSchema } from "@vee-validate/yup";
+import { useField } from "vee-validate";
+
 import { useForm } from "vee-validate";
 import { Button } from "@/components/ui/button";
 import {
@@ -76,14 +104,16 @@ import { Loader2 } from "lucide-vue-next";
 import { useToast } from "@/components/ui/toast/use-toast";
 import { ToastAction, Toaster } from "@/components/ui/toast";
 import { h } from "vue";
-import * as yup from "yup";
 
+import * as yup from "yup";
 const { toast } = useToast();
 
 const formSchema = toTypedSchema(
   yup.object({
     email: yup.string().required().email("The email format is wrong !"),
     password: yup.string().required().min(8),
+    username: yup.string().required().min(1),
+    confirmPassword: yup.string().required().min(8),
   })
 );
 
