@@ -88,7 +88,6 @@
 
 <script setup lang="ts">
 import { toTypedSchema } from "@vee-validate/yup";
-import { useField } from "vee-validate";
 
 import { useForm } from "vee-validate";
 import { Button } from "@/components/ui/button";
@@ -111,9 +110,17 @@ const { toast } = useToast();
 const formSchema = toTypedSchema(
   yup.object({
     email: yup.string().required().email("The email format is wrong !"),
-    password: yup.string().required().min(8),
+    password: yup
+      .string()
+      .required()
+      .min(8)
+      .oneOf([yup.ref("confirmPassword"), null], "Passwords must match"),
     username: yup.string().required().min(1),
-    confirmPassword: yup.string().required().min(8),
+    confirmPassword: yup
+      .string()
+      .required()
+      .min(8)
+      .oneOf([yup.ref("password"), null], "Passwords must match"),
   })
 );
 
