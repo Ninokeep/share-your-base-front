@@ -52,7 +52,9 @@
         </div>
         <p class="text-center text-gray-400">
           Not again an account ?
-          <span class="text-black bold">Sign up</span>
+          <span class="text-black bold"
+            ><NuxtLink to="/register">Sign up</NuxtLink></span
+          >
         </p>
       </div>
     </div>
@@ -94,42 +96,41 @@ const { handleSubmit, isSubmitting, resetForm, values, isFieldDirty, errors } =
 
 const onSubmit = handleSubmit(
   async (values) => {
-    try {
-      const resultLogin = await $fetch(
-        "http://localhost:8888/api/v1/auth/login",
-        {
-          method: "POST",
-          body: {
-            email: values.email,
-            password: values.password,
+    const { data, error } = await useFetch(
+      "http://localhost:8888/api/v1/auth/login",
+      {
+        method: "POST",
+        body: {
+          email: values.email,
+          password: values.password,
+        },
+      }
+    );
+
+    if (error.value) {
+      toast({
+        title: "Email or password is wrong",
+        description: "Can check your password or email and retry",
+        variant: "destructive",
+        action: h(
+          ToastAction,
+          {
+            altText: "Try again",
           },
-        }
-      );
-    } catch (err: any) {
-      displayToast();
-      console.log("erreur ici");
+          {
+            default: () => "Try again",
+          }
+        ),
+      });
+    }
+
+    if (data.value) {
+      console.log(data.value);
     }
     resetForm();
   },
   async (err) => {}
 );
-
-function displayToast() {
-  return toast({
-    title: "Email or password is wrong",
-    description: "Can check your password or email and retry",
-    variant: "destructive",
-    action: h(
-      ToastAction,
-      {
-        altText: "Try again",
-      },
-      {
-        default: () => "Try again",
-      }
-    ),
-  });
-}
 </script>
 
 <style>

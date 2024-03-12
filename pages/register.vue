@@ -78,7 +78,9 @@
         </div>
         <p class="text-center text-gray-400">
           Have an account ?
-          <span class="text-black bold">Login</span>
+          <span class="text-black bold"
+            ><NuxtLink to="/login">Login</NuxtLink></span
+          >
         </p>
       </div>
     </div>
@@ -114,13 +116,13 @@ const formSchema = toTypedSchema(
       .string()
       .required()
       .min(8)
-      .oneOf([yup.ref("confirmPassword"), null], "Passwords must match"),
-    username: yup.string().required().min(1),
+      .oneOf([yup.ref("confirmPassword")], "Passwords must match"),
+    username: yup.string().required().min(1).trim(),
     confirmPassword: yup
       .string()
       .required()
       .min(8)
-      .oneOf([yup.ref("password"), null], "Passwords must match"),
+      .oneOf([yup.ref("password")], "Passwords must match"),
   })
 );
 
@@ -131,42 +133,88 @@ const { handleSubmit, isSubmitting, resetForm, values, isFieldDirty, errors } =
 
 const onSubmit = handleSubmit(
   async (values) => {
-    try {
-      const resultLogin = await $fetch(
-        "http://localhost:8888/api/v1/auth/login",
-        {
-          method: "POST",
-          body: {
-            email: values.email,
-            password: values.password,
-          },
-        }
-      );
-    } catch (err: any) {
-      displayToast();
-      console.log("erreur ici");
+    const { data, error } = await useFetch(
+      "http://localhost:8888/api/v1/auth/register",
+      {
+        method: "POST",
+        body: {
+          email: values.email,
+          username: values.username,
+          passwordConfirm: values.confirmPassword,
+          password: values.password,
+        },
+      }
+    );
+    if (error.value !== null) {
+      if (error.value?.statusCode === 409) {
+        toast({
+          title: "This Email is already taken",
+          description: "Retry again please",
+          variant: "destructive",
+          action: h(
+            ToastAction,
+            {
+              altText: "Try again",
+            },
+            {
+              default: () => "Try again",
+            }
+          ),
+        });
+      } else if (error.value?.statusCode === 400) {
+        toast({
+          title: "Something is wrong",
+          description: "Retry again please",
+          variant: "destructive",
+          action: h(
+            ToastAction,
+            {
+              altText: "Try again",
+            },
+            {
+              default: () => "Try again",
+            }
+          ),
+        });
+      } else {
+        toast({
+          title: "Something is wrong",
+          description: "Retry again please",
+          variant: "destructive",
+          action: h(
+            ToastAction,
+            {
+              altText: "Try again",
+            },
+            {
+              default: () => "Try again",
+            }
+          ),
+        });
+      }
     }
+
+    if (data.value) {
+      toast({
+        title: "Account created successfull",
+        description: "Your account is created, login you please",
+        variant: "default",
+        action: h(
+          ToastAction,
+          {
+            altText: "Ok",
+          },
+          {
+            default: () => "Ok",
+          }
+        ),
+      });
+    }
+
     resetForm();
   },
   async (err) => {}
 );
-
-function displayToast() {
-  return toast({
-    title: "Email or password is wrong",
-    description: "Can check your password or email and retry",
-    variant: "destructive",
-    action: h(
-      ToastAction,
-      {
-        altText: "Try again",
-      },
-      {
-        default: () => "Try again",
-      }
-    ),
-  });
-}
 </script>
 
 <style>

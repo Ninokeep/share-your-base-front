@@ -1,4 +1,3 @@
-import { NuxtLink } from '#build/components';
 <template>
   <div
     class="container-home h-screen flex flex-col items-center justify-center"
@@ -24,7 +23,7 @@ import { NuxtLink } from '#build/components';
     </div>
   </div>
 </template>
-
+<script lang="ts" setup></script>
 <style>
 .container-home {
   background-image: linear-gradient(
