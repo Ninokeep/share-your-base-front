@@ -82,12 +82,21 @@ import * as yup from "yup";
 
 const { toast } = useToast();
 
+const website = useUserStore();
+
+interface TokenResponse {
+  access_token: string;
+}
+interface APIBody {
+  response: TokenResponse;
+}
 const formSchema = toTypedSchema(
   yup.object({
     email: yup.string().required().email("The email format is wrong !"),
     password: yup.string().required().min(8),
   })
 );
+const token = ref<string>("");
 
 const { handleSubmit, isSubmitting, resetForm, values, isFieldDirty, errors } =
   useForm({
@@ -124,12 +133,30 @@ const onSubmit = handleSubmit(
       });
     }
 
-    if (data.value) {
-      console.log(data.value);
+    if (data) {
+      const cookies = useCookie("user");
+      token.value = data.value as string;
+
+      cookies.value = data.value.access_token;
     }
     resetForm();
   },
-  async (err) => {}
+  async (err) => {
+    toast({
+      title: "Something is wrong",
+      description: "Can you retry later",
+      variant: "destructive",
+      action: h(
+        ToastAction,
+        {
+          altText: "Try again",
+        },
+        {
+          default: () => "Try again",
+        }
+      ),
+    });
+  }
 );
 </script>
 

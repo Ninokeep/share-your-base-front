@@ -6,7 +6,9 @@ export default defineNuxtConfig({
     "shadcn-nuxt",
     "nuxt-icon",
     "@vee-validate/nuxt",
+    "@pinia/nuxt",
   ],
+
   veeValidate: {
     autoImports: true,
     // Use different names for components

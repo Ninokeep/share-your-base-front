@@ -4,7 +4,6 @@ const animate = require("tailwindcss-animate");
 module.exports = {
   darkMode: ["class"],
   safelist: ["dark"],
-
   theme: {
     container: {
       center: true,
@@ -16,6 +15,9 @@ module.exports = {
     extend: {
       backgroundColor: {
         primary: "#111827",
+      },
+      ringColor: {
+        primary: "rgba(56, 189, 248,1)",
       },
       colors: {
         border: "hsl(var(--border))",

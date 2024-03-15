@@ -4,7 +4,7 @@
       <SideNavBar />
     </aside>
     <div class="flex-1 bg-primary">
-      <div class="">
+      <div>
         <slot />
       </div>
     </div>
