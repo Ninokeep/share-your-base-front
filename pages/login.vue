@@ -163,15 +163,31 @@ const { authenticated } = storeToRefs(useAuthStore());
 
 const onSubmit = handleSubmit(
   async (values) => {
-    await authStore.authenticatedUser({
+    const error = await authStore.authenticatedUser({
       email: values.email,
       password: values.password,
     });
 
+    if (error) {
+      toast({
+        title: "Email or password is wrong",
+        description: "Can check your password or email and retry",
+        variant: "destructive",
+        action: h(
+          ToastAction,
+          {
+            altText: "Try again",
+          },
+          {
+            default: () => "Try again",
+          }
+        ),
+      });
+    }
     if (authenticated.value) {
-      console.log(authStore.getAuthenticated);
       await navigateTo("/bases");
     }
+    resetForm();
   },
   (err) => {}
 );

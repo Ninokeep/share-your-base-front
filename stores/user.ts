@@ -13,7 +13,7 @@ export const useAuthStore = defineStore("auth", {
 
   actions: {
     async authenticatedUser({ email, password }: UserPayload) {
-      const { data, pending }: any = await useFetch(
+      const { data, pending, error }: any = await useFetch(
         "http://localhost:8888/api/v1/auth/login",
         {
           method: "post",
@@ -25,11 +25,13 @@ export const useAuthStore = defineStore("auth", {
         }
       );
       this.loading = pending;
-
+      if (error.value) return true;
       if (data.value) {
         const token = useCookie("token");
         token.value = data?.value?.access_token;
         this.authenticated = true;
+
+        return false;
       }
     },
 
