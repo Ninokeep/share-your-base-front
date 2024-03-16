@@ -1,26 +1,42 @@
-export const useUserStore = defineStore("websiteStore", () => {
-  const userInformations = reactive({
-    username: "",
-    email: "",
-    rule: "",
-    draftBase: 0,
-  });
+interface UserPayload {
+  email: string;
+  password: string;
+}
+export const useAuthStore = defineStore("auth", {
+  state: () => ({
+    authenticated: false,
+    loading: false,
+  }),
+  getters: {
+    getAuthenticated: (state) => state.authenticated,
+  },
 
-  function setUsername(username: string): void {
-    userInformations.username = username;
-  }
+  actions: {
+    async authenticatedUser({ email, password }: UserPayload) {
+      const { data, pending }: any = await useFetch(
+        "http://localhost:8888/api/v1/auth/login",
+        {
+          method: "post",
+          headers: { "Content-Type": "application/json" },
+          body: {
+            email,
+            password,
+          },
+        }
+      );
+      this.loading = pending;
 
-  function setEmail(email: string): void {
-    userInformations.email = email;
-  }
+      if (data.value) {
+        const token = useCookie("token");
+        token.value = data?.value?.access_token;
+        this.authenticated = true;
+      }
+    },
 
-  function setRule(rule: string): void {
-    userInformations.rule = rule;
-  }
-
-  function setDraftBase(draftBase: number) {
-    userInformations.draftBase = draftBase;
-  }
-
-  return { userInformations, setUsername, setEmail, setRule, setDraftBase };
+    userLogOut() {
+      const token = useCookie("token");
+      this.authenticated = false;
+      token.value = null;
+    },
+  },
 });

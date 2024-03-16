@@ -79,10 +79,8 @@ import { useToast } from "@/components/ui/toast/use-toast";
 import { ToastAction, Toaster } from "@/components/ui/toast";
 import { h } from "vue";
 import * as yup from "yup";
-
+import { storeToRefs } from "pinia";
 const { toast } = useToast();
-
-const website = useUserStore();
 
 interface TokenResponse {
   access_token: string;
@@ -90,6 +88,7 @@ interface TokenResponse {
 interface APIBody {
   response: TokenResponse;
 }
+
 const formSchema = toTypedSchema(
   yup.object({
     email: yup.string().required().email("The email format is wrong !"),
@@ -102,8 +101,9 @@ const { handleSubmit, isSubmitting, resetForm, values, isFieldDirty, errors } =
   useForm({
     validationSchema: formSchema,
   });
-
-const onSubmit = handleSubmit(
+const authStore = useAuthStore();
+const { authenticated } = storeToRefs(useAuthStore());
+/* const onSubmit = handleSubmit(
   async (values) => {
     const { data, error } = await useFetch(
       "http://localhost:8888/api/v1/auth/login",
@@ -138,6 +138,8 @@ const onSubmit = handleSubmit(
       token.value = data.value as string;
 
       cookies.value = data.value.access_token;
+      website.setEmail(values.email);
+      website.setToken(data.value.access_token);
     }
     resetForm();
   },
@@ -157,6 +159,21 @@ const onSubmit = handleSubmit(
       ),
     });
   }
+); */
+
+const onSubmit = handleSubmit(
+  async (values) => {
+    await authStore.authenticatedUser({
+      email: values.email,
+      password: values.password,
+    });
+
+    if (authenticated.value) {
+      console.log(authStore.getAuthenticated);
+      await navigateTo("/bases");
+    }
+  },
+  (err) => {}
 );
 </script>
 
