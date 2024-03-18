@@ -3,7 +3,7 @@
     <aside class="lg:w-1/5">
       <SideNavBar />
     </aside>
-    <div class="flex-1 bg-primary">
+    <div class="flex-1">
       <div>
         <slot />
       </div>

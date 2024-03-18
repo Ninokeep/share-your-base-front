@@ -23,14 +23,14 @@ const sidebarNavItems: Item[] = [
 </script>
 
 <template>
-  <nav class="h-screen border-r bg-primary border-r-gray-800 py-8 px-3">
+  <nav class="h-screen border-r border-r-gray-400 py-8 px-3">
     <div class="flex flex-col gap-2">
       <Button
         v-for="item in sidebarNavItems"
         variant="ghost"
         :href="item.href"
         as="a"
-        class="flex justify-start text-white opacity-75 hover:opacity-100 hover:text-white hover:bg-gray-800"
+        class="flex justify-start opacity-75 hover:opacity-100 hover:text-white hover:bg-gray-800"
       >
         <Icon :name="item.icon" class="mr-2" size="16" />
         {{ item.title }}</Button

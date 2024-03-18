@@ -1,21 +1,17 @@
 <template>
   <DashboardLayout>
-    <h1 class="text-white text-2xl font-bold px-4 py-2">Settings</h1>
+    <h1 class="text-2xl font-bold px-4 py-2">Settings</h1>
     <p class="text-muted-foreground px-4">
       Manage your account settings and set e-mail preferences.
     </p>
-    <Separator class="bg-gray-800 mt-4" />
+    <Separator class="mt-4" />
 
     <form class="pb-5 px-5 w-2/4 space-y-3 mt-4" @submit="onSubmit">
       <FormField v-slot="{ componentField }" name="username">
         <FormItem>
-          <FormLabel class="text-sm text-white font-medium">Username</FormLabel>
+          <FormLabel class="text-sm font-medium">Username</FormLabel>
           <FormControl>
-            <Input
-              type="text"
-              v-bind="componentField"
-              class="focus-visible:border-[#38bdf8] focus-visible:ring-offset-0 bg-primary focus-visible:border-2 text-white"
-            />
+            <Input type="text" v-bind="componentField" />
           </FormControl>
           <FormDescription>
             This is your public display name. It can be your real name or a
@@ -27,13 +23,9 @@
 
       <FormField v-slot="{ componentField }" name="password">
         <FormItem>
-          <FormLabel class="text-sm text-white font-medium">Password</FormLabel>
+          <FormLabel class="text-sm font-medium">Password</FormLabel>
           <FormControl>
-            <Input
-              type="text"
-              v-bind="componentField"
-              class="focus-visible:border-[#38bdf8] focus-visible:ring-offset-0 bg-primary focus-visible:border-2 text-white"
-            />
+            <Input type="text" v-bind="componentField" />
           </FormControl>
           <FormDescription> You can manage your password. </FormDescription>
           <FormMessage />
@@ -42,13 +34,9 @@
 
       <FormField v-slot="{ componentField }" name="email">
         <FormItem>
-          <FormLabel class="text-sm text-white font-medium">Email</FormLabel>
+          <FormLabel class="text-sm font-medium">Email</FormLabel>
           <FormControl>
-            <Input
-              type="text"
-              v-bind="componentField"
-              class="focus-visible:border-[#38bdf8] focus-visible:ring-offset-0 bg-primary focus-visible:border-2 text-white"
-            />
+            <Input type="text" v-bind="componentField" />
           </FormControl>
           <FormDescription
             >You can manage verified email addresses in your email settings.
