@@ -31,7 +31,7 @@ const route = useRoute();
         v-for="item in sidebarNavItems"
         variant="ghost"
         :href="item.href"
-        as="a"
+        :as="route.path === item.href ? 'button' : 'a'"
         :class="
           route.path === item.href
             ? 'flex justify-start opacity-75 opacity-100 text-white bg-gray-800 hover:bg-gray-800 hover:text-white'
