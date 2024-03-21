@@ -1,6 +1,4 @@
 export default defineNuxtRouteMiddleware((to, from) => {
-  console.log("the middleware auth running...");
-
   const { authenticated } = storeToRefs(useAuthStore());
   const token = useCookie("token");
 
