@@ -20,6 +20,8 @@ const sidebarNavItems: Item[] = [
     icon: "iconamoon:settings-bold",
   },
 ];
+
+const route = useRoute();
 </script>
 
 <template>
@@ -30,7 +32,11 @@ const sidebarNavItems: Item[] = [
         variant="ghost"
         :href="item.href"
         as="a"
-        class="flex justify-start opacity-75 hover:opacity-100 hover:text-white hover:bg-gray-800"
+        :class="
+          route.path === item.href
+            ? 'flex justify-start opacity-75 opacity-100 text-white bg-gray-800 hover:bg-gray-800 hover:text-white'
+            : 'flex justify-start opacity-75 hover:opacity-100 hover:text-white hover:bg-gray-800'
+        "
       >
         <Icon :name="item.icon" class="mr-2" size="16" />
         {{ item.title }}</Button
