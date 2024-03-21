@@ -4,7 +4,6 @@
     <p class="text-muted-foreground px-4">List of the bases.</p>
     <Separator class="mt-4" />
     <Table>
-      <TableCaption>A list of your recent invoices.</TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead class="w-[100px]"> Name </TableHead>
