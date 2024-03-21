@@ -22,7 +22,7 @@
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow v-for="row in data">
+        <TableRow v-for="row in data?.data">
           <TableCell class="font-medium"> {{ row.name }} </TableCell>
           <TableCell>{{ row.type }}</TableCell>
           <TableCell>{{ row.costHQPerHour }}</TableCell>
@@ -36,6 +36,40 @@
           <TableCell>{{ row.rating }}</TableCell>
         </TableRow>
       </TableBody>
+      <Pagination
+        v-slot="{ page }"
+        :total="data?.meta?.itemCount"
+        :sibling-count="1"
+        show-edges
+        :default-page="1"
+        :items-per-page="data?.meta?.take"
+      >
+        <PaginationList v-slot="{ items }" class="flex items-center gap-1">
+          <PaginationFirst />
+          <PaginationPrev />
+
+          <template v-for="(item, index) in items">
+            <PaginationListItem
+              v-if="item.type === 'page'"
+              :key="index"
+              :value="item.value"
+              as-child
+            >
+              <Button
+                class="w-10 h-10 p-0"
+                :variant="item.value === page ? 'default' : 'outline'"
+                @click="changePage(item.value)"
+              >
+                {{ item.value }}
+              </Button>
+            </PaginationListItem>
+            <PaginationEllipsis v-else :key="item.type" :index="index" />
+          </template>
+
+          <PaginationNext />
+          <PaginationLast />
+        </PaginationList>
+      </Pagination>
     </Table>
   </DashboardLayout>
 </template>
@@ -65,6 +99,20 @@ interface Bases {
 
   rating: number;
 }
+
+interface ResponseAPI {
+  data: Bases[];
+  meta: MetaInformations;
+}
+
+interface MetaInformations {
+  page: number;
+  take: number;
+  itemCount: number;
+  pageCount: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+}
 import DashboardLayout from "@/layouts/dashboardLayout.vue";
 import {
   Table,
@@ -75,15 +123,32 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Pagination,
+  PaginationEllipsis,
+  PaginationFirst,
+  PaginationLast,
+  PaginationList,
+  PaginationListItem,
+  PaginationNext,
+  PaginationPrev,
+} from "@/components/ui/pagination";
 
-const bases = reactive([]);
+const currentPage = ref(1);
 
-const { data, pending, error, refresh } = await useAsyncData<Bases[]>(
+const { data, pending, error, refresh } = await useAsyncData<ResponseAPI>(
   "bases",
   () => {
-    return $fetch("http://localhost:8888/api/v1/bases/");
+    return $fetch(`http://localhost:8888/api/v1/bases?take=${10}`);
   }
 );
+
+async function changePage(numberPage: number) {
+  currentPage.value = numberPage;
+  data.value = await $fetch(
+    `http://localhost:8888/api/v1/bases?take=${10}&page=${currentPage.value}`
+  );
+}
 </script>
 
 <style scoped></style>
