@@ -38,6 +38,7 @@
       </TableBody>
       <Pagination
         v-slot="{ page }"
+        class="mt-3 ml-3"
         :total="data?.meta?.itemCount"
         :sibling-count="1"
         show-edges
@@ -136,12 +137,9 @@ import {
 
 const currentPage = ref(1);
 
-const { data, pending, error, refresh } = await useAsyncData<ResponseAPI>(
-  "bases",
-  () => {
-    return $fetch(`http://localhost:8888/api/v1/bases?take=${10}`);
-  }
-);
+const { data } = await useAsyncData<ResponseAPI>("bases", () => {
+  return $fetch(`http://localhost:8888/api/v1/bases?take=${10}`);
+});
 
 async function changePage(numberPage: number) {
   currentPage.value = numberPage;
