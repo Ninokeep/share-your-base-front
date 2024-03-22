@@ -26,7 +26,9 @@
           <TableCell>{{ row.type }}</TableCell>
           <TableCell>{{ row.costHQPerHour }}</TableCell>
           <TableCell>{{ row.costMetalPerHour }} </TableCell>
-          <TableCell class="font-medium"> {{ row.costWoodPerHour }} </TableCell>
+          <TableCell class="font-medium">
+            {{ row.costWoodPerHour }}
+          </TableCell>
           <TableCell>{{ row.costStonePerHour }}</TableCell>
           <TableCell>{{ row.costHQ }}</TableCell>
           <TableCell> {{ row.costMetal }} </TableCell>
@@ -34,10 +36,31 @@
           <TableCell>{{ row.costStone }}</TableCell>
           <TableCell>{{ row.rating }}</TableCell>
           <TableCell>
-            <Button variant="outline">Edit</Button>
-          </TableCell>
-          <TableCell>
-            <Button variant="destructive">Remove</Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger as-child>
+                <Button variant="ghost" size="sm">
+                  <Icon name="tabler:dots"></Icon>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent class="mr-2">
+                <DropdownMenuLabel
+                  ><Button
+                    size="sm"
+                    variant="destructive"
+                    class="w-full justify-start"
+                    ><Icon Remove name="mdi:trash" class="mr-2" />Remove</Button
+                  ></DropdownMenuLabel
+                >
+                <DropdownMenuLabel
+                  ><Button
+                    size="sm"
+                    variant="outline"
+                    class="w-full justify-start"
+                    ><Icon Remove name="mdi:pen" class="mr-2" />Edit</Button
+                  ></DropdownMenuLabel
+                >
+              </DropdownMenuContent>
+            </DropdownMenu>
           </TableCell>
         </TableRow>
       </TableBody>
@@ -142,13 +165,13 @@ import {
 const currentPage = ref(1);
 
 const { data } = await useAsyncData<ResponseAPI>("bases", () => {
-  return $fetch(`http://localhost:8888/api/v1/bases?take=${10}`);
+  return $fetch(`http://localhost:8888/api/v1/bases?take=${8}`);
 });
 
 async function changePage(numberPage: number) {
   currentPage.value = numberPage;
   data.value = await $fetch(
-    `http://localhost:8888/api/v1/bases?take=${10}&page=${currentPage.value}`
+    `http://localhost:8888/api/v1/bases?take=${8}&page=${currentPage.value}`
   );
 }
 </script>

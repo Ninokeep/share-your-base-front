@@ -12,3 +12,5 @@
 <script lang="ts" setup>
 import SideNavBar from "@/components/sideNavBar/sideNavBar.vue";
 </script>
+
+<style></style>

@@ -25,7 +25,7 @@ const route = useRoute();
 </script>
 
 <template>
-  <nav class="border-r border-r-gray-200 py-8 px-3 h-screen">
+  <nav class="border-r border-r-gray-200 py-8 px-3 h-full">
     <div class="flex flex-col gap-2">
       <Button
         v-for="item in sidebarNavItems"
