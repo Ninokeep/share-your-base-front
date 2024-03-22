@@ -22,7 +22,7 @@
       </TableHeader>
       <TableBody>
         <TableRow v-for="row in data?.data">
-          <TableCell class="font-medium"> {{ row.name }} </TableCell>
+          <TableCell> {{ row.name }} </TableCell>
           <TableCell>{{ row.type }}</TableCell>
           <TableCell>{{ row.costHQPerHour }}</TableCell>
           <TableCell>{{ row.costMetalPerHour }} </TableCell>
@@ -33,6 +33,12 @@
           <TableCell class="font-medium"> {{ row.costWood }} </TableCell>
           <TableCell>{{ row.costStone }}</TableCell>
           <TableCell>{{ row.rating }}</TableCell>
+          <TableCell>
+            <Button variant="outline">Edit</Button>
+          </TableCell>
+          <TableCell>
+            <Button variant="destructive">Remove</Button>
+          </TableCell>
         </TableRow>
       </TableBody>
       <Pagination
@@ -117,7 +123,6 @@ import DashboardLayout from "@/layouts/dashboardLayout.vue";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,

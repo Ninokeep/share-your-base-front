@@ -1,12 +1,10 @@
 <template>
   <div class="flex flex-col lg:flex-row lg:space-y-0 h-screen">
-    <aside class="lg:w-1/5">
+    <aside class="w-[16rem]">
       <SideNavBar />
     </aside>
-    <div class="flex-1">
-      <div>
-        <slot />
-      </div>
+    <div class="w-[100%]">
+      <slot />
     </div>
   </div>
 </template>
