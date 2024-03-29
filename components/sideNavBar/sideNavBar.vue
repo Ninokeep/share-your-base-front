@@ -22,10 +22,18 @@ const sidebarNavItems: Item[] = [
 ];
 
 const route = useRoute();
+const router = useRouter();
+const authStore = useAuthStore();
+function logout() {
+  authStore.userLogOut();
+  router.push({ path: "/login" });
+}
 </script>
 
 <template>
-  <nav class="border-r border-r-gray-200 py-8 px-3 h-full">
+  <nav
+    class="border-r border-r-gray-200 py-8 px-3 h-full flex flex-col justify-between"
+  >
     <div class="flex flex-col gap-2">
       <Button
         v-for="item in sidebarNavItems"
@@ -40,6 +48,13 @@ const route = useRoute();
       >
         <Icon :name="item.icon" class="mr-2" size="16" />
         {{ item.title }}</Button
+      >
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <Button @click="logout"
+        ><Icon name="material-symbols:logout" class="mr-2" size="16" />
+        Logout</Button
       >
     </div>
   </nav>

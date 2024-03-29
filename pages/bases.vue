@@ -46,19 +46,39 @@
                 <DropdownMenuLabel
                   ><Button
                     size="sm"
-                    variant="destructive"
-                    class="w-full justify-start"
-                    ><Icon Remove name="mdi:trash" class="mr-2" />Remove</Button
-                  ></DropdownMenuLabel
-                >
-                <DropdownMenuLabel
-                  ><Button
-                    size="sm"
                     variant="outline"
                     class="w-full justify-start"
                     ><Icon Remove name="mdi:pen" class="mr-2" />Edit</Button
                   ></DropdownMenuLabel
                 >
+                <DropdownMenuLabel>
+                  <AlertDialog>
+                    <AlertDialogTrigger class="w-full"
+                      ><Button
+                        variant="destructive"
+                        class="w-full justify-start"
+                        size="sm"
+                      >
+                        <Icon name="mdi:trash" class="mr-2" />Remove
+                      </Button></AlertDialogTrigger
+                    >
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle
+                          >Are you absolutely sure?</AlertDialogTitle
+                        >
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently
+                          delete your database from our servers.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction>Continue</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </DropdownMenuLabel>
               </DropdownMenuContent>
             </DropdownMenu>
           </TableCell>
@@ -142,6 +162,17 @@ interface MetaInformations {
   hasPreviousPage: boolean;
   hasNextPage: boolean;
 }
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import DashboardLayout from "@/layouts/dashboardLayout.vue";
 import {
   Table,

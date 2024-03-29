@@ -5,13 +5,16 @@
       Manage your account settings and set e-mail preferences.
     </p>
     <Separator class="mt-4" />
-
     <form class="pb-5 px-5 w-2/4 space-y-3 mt-4" @submit="onSubmit">
       <FormField v-slot="{ componentField }" name="username">
         <FormItem>
           <FormLabel class="text-sm font-medium">Username</FormLabel>
           <FormControl>
-            <Input type="text" v-bind="componentField" />
+            <Input
+              type="text"
+              v-bind="componentField"
+              :placeholder="authStore.user.username"
+            />
           </FormControl>
           <FormDescription>
             This is your public display name. It can be your real name or a
@@ -36,7 +39,11 @@
         <FormItem>
           <FormLabel class="text-sm font-medium">Email</FormLabel>
           <FormControl>
-            <Input type="text" v-bind="componentField" />
+            <Input
+              type="text"
+              v-bind="componentField"
+              :placeholder="authStore.user.email"
+            />
           </FormControl>
           <FormDescription
             >You can manage verified email addresses in your email settings.
@@ -71,6 +78,8 @@ const formSchema = toTypedSchema(
     username: yup.string().required().min(1).trim(),
   })
 );
+
+const authStore = useAuthStore();
 
 const { handleSubmit, isSubmitting, resetForm, values, isFieldDirty, errors } =
   useForm({
