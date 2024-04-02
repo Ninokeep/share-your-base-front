@@ -13,6 +13,7 @@ export const useAuthStore = defineStore("auth", {
       username: "",
       email: "",
       role: "",
+      password: "",
     },
   }),
   getters: {

@@ -10,11 +10,7 @@
         <FormItem>
           <FormLabel class="text-sm font-medium">Username</FormLabel>
           <FormControl>
-            <Input
-              type="text"
-              v-bind="componentField"
-              :placeholder="authStore.user.username"
-            />
+            <Input type="text" v-bind="componentField" />
           </FormControl>
           <FormDescription>
             This is your public display name. It can be your real name or a
@@ -42,7 +38,7 @@
             <Input
               type="text"
               v-bind="componentField"
-              :placeholder="authStore.user.email"
+              :placeholder="authStore.user.username"
             />
           </FormControl>
           <FormDescription
@@ -52,7 +48,9 @@
         </FormItem>
       </FormField>
 
-      <Button variant="secondary" type="submit"> Update profile</Button>
+      <Button type="submit" :disabled="isSubmitting || formHasChanges">
+        Update
+      </Button>
     </form>
   </DashboardLayout>
 </template>
@@ -71,23 +69,54 @@ import {
   FormMessage,
   FormDescription,
 } from "@/components/ui/form";
+const authStore = useAuthStore();
+
 const formSchema = toTypedSchema(
   yup.object({
-    email: yup.string().required().email("The email format is wrong"),
-    password: yup.string().required().min(8),
-    username: yup.string().required().min(1).trim(),
+    email: yup
+      .string()
+      .email("The email format is wrong")
+      .default(authStore.user.email),
+    password: yup.string().min(8).notRequired(),
+    username: yup.string().min(1).trim().default(authStore.user.username),
   })
 );
 
-const authStore = useAuthStore();
+function fieldHasError() {
+  return Object.values(errors.value).length > 0 ? true : false;
+}
 
-const { handleSubmit, isSubmitting, resetForm, values, isFieldDirty, errors } =
-  useForm({
-    validationSchema: formSchema,
-  });
+const {
+  handleSubmit,
+  isSubmitting,
+  resetForm,
+  values,
+  isFieldDirty,
+  errors,
+  isFieldValid,
+} = useForm({
+  validationSchema: formSchema,
+});
 
-const onSubmit = handleSubmit(async (values) => {
-  console.log(values);
+const onSubmit = handleSubmit(async (formValues) => {
+  const user = omitProperties(authStore.user, ["role"]);
+  user.password = undefined;
+  Object.values(formValues).filter((e) => !Object.values(user).includes(e));
+
+  let formData = {};
+  for (const [key] of Object.entries(user)) {
+    if (user[key] !== formValues[key]) {
+      formData = { ...formData, [key]: formValues[key] };
+    }
+  }
+
+  console.log(formData);
+});
+
+const formHasChanges = computed(() => {
+  const user = omitProperties(authStore.user, ["role"]);
+  user.password = undefined;
+  return compareTwoObjects(user, values);
 });
 </script>
 
