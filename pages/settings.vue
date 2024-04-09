@@ -106,14 +106,15 @@ const onSubmit = handleSubmit(async (formValues) => {
   let formData = {};
   for (const [key] of Object.entries(user)) {
     if (user[key] !== formValues[key]) {
-      formData = { ...formData, [key]: formValues[key], id: user.id };
+      formData = { ...formData, [key]: formValues[key] };
     }
   }
+
   console.log(formData);
 });
 
 const formHasChanges = computed(() => {
-  const user = omitProperties(authStore.user, ["role", "id"]);
+  const user = omitProperties(authStore.user, ["role"]);
   user.password = undefined;
   return compareTwoObjects(user, values);
 });

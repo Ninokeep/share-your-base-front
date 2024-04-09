@@ -10,7 +10,6 @@ export const useAuthStore = defineStore("auth", {
     authenticated: false,
     loading: false,
     user: {
-      id: 0,
       username: "",
       email: "",
       role: "",
@@ -40,6 +39,7 @@ export const useAuthStore = defineStore("auth", {
         const token = useCookie("token");
         token.value = data?.value?.access_token;
         this.authenticated = true;
+        this.user.email = "jean";
         return false;
       }
     },
