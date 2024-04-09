@@ -44,13 +44,18 @@
               </DropdownMenuTrigger>
               <DropdownMenuContent class="mr-2">
                 <DropdownMenuLabel
-                  ><Button
-                    size="sm"
-                    variant="outline"
-                    class="w-full justify-start"
-                    ><Icon Remove name="mdi:pen" class="mr-2" />Edit</Button
-                  ></DropdownMenuLabel
-                >
+                  ><Dialog>
+                    <DialogTrigger class="w-full"
+                      ><Button
+                        size="sm"
+                        variant="outline"
+                        class="w-full justify-start"
+                        ><Icon Remove name="mdi:pen" class="mr-2" />Edit</Button
+                      ></DialogTrigger
+                    >
+                    <EditForm name="toto" type="attack" />
+                  </Dialog>
+                </DropdownMenuLabel>
                 <DropdownMenuLabel>
                   <AlertDialog>
                     <AlertDialogTrigger class="w-full"
@@ -162,6 +167,15 @@ interface MetaInformations {
   hasPreviousPage: boolean;
   hasNextPage: boolean;
 }
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
