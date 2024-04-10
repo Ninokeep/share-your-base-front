@@ -24,7 +24,15 @@ const props = defineProps<{
 const formSchema = toTypedSchema(
   yup.object({
     name: yup.string().default(props.name),
-    type: yup.string().min(8),
+    type: yup.string().min(1).default(props.type),
+    costHQPerHour: yup.number().positive().default(props.costHQPerHour),
+    costMetalPerHour: yup.number().positive().default(props.costMetalPerHour),
+    costWoodPerHour: yup.number().positive().default(props.costWoodPerHour),
+    costStonePerHour: yup.number().positive().default(props.costStonePerHour),
+    costStone: yup.number().positive().default(props.costStone),
+    costWood: yup.number().positive().default(props.costWood),
+    costHQ: yup.number().positive().default(props.costHQ),
+    costMetal: yup.number().positive().default(props.costMetal),
   })
 );
 
@@ -193,6 +201,8 @@ console.log(baseName.value);
         </FormItem>
       </FormField>
     </form>
-    <DialogFooter> Save changes </DialogFooter>
+    <DialogFooter>
+      <Button variant="default">Save changes</Button>
+    </DialogFooter>
   </DialogContent>
 </template>
