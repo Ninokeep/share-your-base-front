@@ -8,14 +8,14 @@ import {
 } from "@/components/ui/dialog";
 import * as yup from "yup";
 
-defineProps<{
-  name: string;
+const props = defineProps<{
+  baseName: string;
   type: string;
 }>();
 
 const formSchema = toTypedSchema(
   yup.object({
-    name: yup.string().default(name),
+    name: yup.string().default(props.baseName),
     type: yup.string().min(8),
   })
 );
@@ -31,6 +31,9 @@ const {
 } = useForm({
   validationSchema: formSchema,
 });
+
+const baseName = ref(props.baseName);
+console.log(baseName.value);
 </script>
 
 <template>

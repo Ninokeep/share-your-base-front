@@ -53,7 +53,7 @@
                         ><Icon Remove name="mdi:pen" class="mr-2" />Edit</Button
                       ></DialogTrigger
                     >
-                    <EditForm name="toto" type="attack" />
+                    <EditForm base-name="toto" type="attack" />
                   </Dialog>
                 </DropdownMenuLabel>
                 <DropdownMenuLabel>
