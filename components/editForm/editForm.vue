@@ -60,6 +60,22 @@ const {
 function getBase() {
   console.log(base.value);
 }
+
+const onSubmit = handleSubmit(async (formValues) => {
+  let formData = {};
+
+  for (const [key] of Object.entries(base.value)) {
+    if (base.value[key] !== formValues[key]) {
+      formData = { ...formData, [key]: formValues[key] };
+    }
+  }
+
+  console.log(formData);
+});
+
+const formHasChanges = computed(() => {
+  return compareTwoObjects(base.value, values);
+});
 </script>
 
 <template>
@@ -70,7 +86,7 @@ function getBase() {
         Make changes to your base here. Click save when you're done.
       </DialogDescription>
     </DialogHeader>
-    <form class="flex flex-col gap-4 py-4">
+    <form class="flex flex-col gap-4 py-4" @submit="onSubmit">
       <FormField v-slot="{ componentField }" name="name" :model-value="name">
         <FormItem class="gap-4 flex items-center">
           <FormLabel class="text-sm font-medium text-end flex-1"
@@ -242,9 +258,14 @@ function getBase() {
           </div>
         </FormItem>
       </FormField>
+      <DialogFooter>
+        <Button
+          variant="default"
+          type="submit"
+          :disabled="isSubmitting || formHasChanges"
+          >Save changes</Button
+        >
+      </DialogFooter>
     </form>
-    <DialogFooter>
-      <Button variant="default" @click="getBase">Save changes</Button>
-    </DialogFooter>
   </DialogContent>
 </template>
