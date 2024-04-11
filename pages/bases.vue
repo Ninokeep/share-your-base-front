@@ -37,22 +37,22 @@
           <TableCell>{{ row.rating }}</TableCell>
           <TableCell>
             <DropdownMenu>
-              <DropdownMenuTrigger as-child>
+              <DropdownMenuTrigger>
                 <Button variant="ghost" size="sm">
                   <Icon name="tabler:dots"></Icon>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent class="mr-2">
-                <DropdownMenuLabel
-                  ><Dialog>
-                    <DialogTrigger class="w-full"
-                      ><Button
+                <DropdownMenuLabel>
+                  <Dialog>
+                    <DialogTrigger class="w-full" as-child>
+                      <Button
                         size="sm"
                         variant="outline"
                         class="w-full justify-start"
                         ><Icon Remove name="mdi:pen" class="mr-2" />Edit</Button
-                      ></DialogTrigger
-                    >
+                      >
+                    </DialogTrigger>
                     <EditForm v-bind="row" />
                   </Dialog>
                 </DropdownMenuLabel>
@@ -167,6 +167,14 @@ interface MetaInformations {
   hasPreviousPage: boolean;
   hasNextPage: boolean;
 }
+import {
+  DropdownMenu,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuContent,
+} from "@/components/ui/dropdown-menu";
+
 import {
   Dialog,
   DialogContent,

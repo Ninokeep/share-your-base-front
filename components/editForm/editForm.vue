@@ -6,6 +6,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import * as yup from "yup";
 
 const props = defineProps<{
@@ -21,9 +28,11 @@ const props = defineProps<{
   costMetal: number;
 }>();
 
+const base = ref(props);
+
 const formSchema = toTypedSchema(
   yup.object({
-    name: yup.string().default(props.name),
+    name: yup.string().default(base.value.name),
     type: yup.string().min(1).default(props.type),
     costHQPerHour: yup.number().positive().default(props.costHQPerHour),
     costMetalPerHour: yup.number().positive().default(props.costMetalPerHour),
@@ -48,8 +57,9 @@ const {
   validationSchema: formSchema,
 });
 
-const baseName = ref(props.name);
-console.log(baseName.value);
+function getBase() {
+  console.log(base.value);
+}
 </script>
 
 <template>
@@ -61,7 +71,7 @@ console.log(baseName.value);
       </DialogDescription>
     </DialogHeader>
     <form class="flex flex-col gap-4 py-4">
-      <FormField v-slot="{ componentField }" name="name">
+      <FormField v-slot="{ componentField }" name="name" :model-value="name">
         <FormItem class="gap-4 flex items-center">
           <FormLabel class="text-sm font-medium text-end flex-1"
             >Name
@@ -75,7 +85,7 @@ console.log(baseName.value);
         </FormItem>
       </FormField>
 
-      <FormField v-slot="{ componentField }" name="type">
+      <FormField v-slot="{ componentField }" name="type" :model-value="type">
         <FormItem class="flex gap-4 items-center">
           <FormLabel class="text-sm font-medium text-end flex-1"
             >Type
@@ -89,7 +99,11 @@ console.log(baseName.value);
         </FormItem>
       </FormField>
 
-      <FormField v-slot="{ componentField }" name="costHQPerHour">
+      <FormField
+        v-slot="{ componentField }"
+        name="costHQPerHour"
+        :model-value="costHQPerHour"
+      >
         <FormItem class="flex gap-4 items-center">
           <FormLabel class="text-sm font-medium text-end flex-1"
             >Cost HQ Per Hour
@@ -103,7 +117,11 @@ console.log(baseName.value);
         </FormItem>
       </FormField>
 
-      <FormField v-slot="{ componentField }" name="costMetalPerHour">
+      <FormField
+        v-slot="{ componentField }"
+        name="costMetalPerHour"
+        :model-value="costMetalPerHour"
+      >
         <FormItem class="flex gap-4 items-center">
           <FormLabel class="text-sm font-medium text-end flex-1"
             >Cost Metal Per Hour
@@ -117,7 +135,11 @@ console.log(baseName.value);
         </FormItem>
       </FormField>
 
-      <FormField v-slot="{ componentField }" name="costWoodPerHour">
+      <FormField
+        v-slot="{ componentField }"
+        name="costWoodPerHour"
+        :model-value="costWoodPerHour"
+      >
         <FormItem class="flex gap-4 items-center">
           <FormLabel class="text-sm font-medium text-end flex-1"
             >Cost Wood Per Hour
@@ -131,7 +153,11 @@ console.log(baseName.value);
         </FormItem>
       </FormField>
 
-      <FormField v-slot="{ componentField }" name="costStonePerHour">
+      <FormField
+        v-slot="{ componentField }"
+        name="costStonePerHour"
+        :model-value="costStonePerHour"
+      >
         <FormItem class="flex gap-4 items-center">
           <FormLabel class="text-sm font-medium text-end flex-1"
             >Cost Stone Per Hour
@@ -145,7 +171,11 @@ console.log(baseName.value);
         </FormItem>
       </FormField>
 
-      <FormField v-slot="{ componentField }" name="costHQ">
+      <FormField
+        v-slot="{ componentField }"
+        name="costHQ"
+        :model-value="costHQ"
+      >
         <FormItem class="flex gap-4 items-center">
           <FormLabel class="text-sm font-medium text-end flex-1"
             >Cost HQ
@@ -159,7 +189,11 @@ console.log(baseName.value);
         </FormItem>
       </FormField>
 
-      <FormField v-slot="{ componentField }" name="costStone">
+      <FormField
+        v-slot="{ componentField }"
+        name="costStone"
+        :model-value="costStone"
+      >
         <FormItem class="flex gap-4 items-center">
           <FormLabel class="text-sm font-medium text-end flex-1"
             >Cost Stone
@@ -173,7 +207,11 @@ console.log(baseName.value);
         </FormItem>
       </FormField>
 
-      <FormField v-slot="{ componentField }" name="costMetal">
+      <FormField
+        v-slot="{ componentField }"
+        name="costMetal"
+        :model-value="costMetal"
+      >
         <FormItem class="flex gap-4 items-center">
           <FormLabel class="text-sm font-medium text-end flex-1"
             >Cost Metal
@@ -187,7 +225,11 @@ console.log(baseName.value);
         </FormItem>
       </FormField>
 
-      <FormField v-slot="{ componentField }" name="costWood">
+      <FormField
+        v-slot="{ componentField }"
+        name="costWood"
+        :model-value="costWood"
+      >
         <FormItem class="flex gap-4 items-center">
           <FormLabel class="text-sm font-medium text-end flex-1"
             >CostWood
@@ -202,7 +244,7 @@ console.log(baseName.value);
       </FormField>
     </form>
     <DialogFooter>
-      <Button variant="default">Save changes</Button>
+      <Button variant="default" @click="getBase">Save changes</Button>
     </DialogFooter>
   </DialogContent>
 </template>
