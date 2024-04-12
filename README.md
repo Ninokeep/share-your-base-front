@@ -93,7 +93,8 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 ![localhost_3000_bases](https://github.com/Ninokeep/share-your-base-front/assets/121240813/ad8344ba-b470-4dab-a694-a7da9ce60a50)
 
 ### Dashbord - Edit Base
-![localhost_3000_bases_](https://github.com/Ninokeep/share-your-base-front/assets/121240813/755b2b01-94f7-4047-b878-958693de3de6)
+![Uploading localhost_3000_bases_ · 12.08am · 04-13.jpeg…]()
+
 
 
 ### Dashboard - Settings
