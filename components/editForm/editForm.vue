@@ -32,7 +32,7 @@ const base = ref(props);
 
 const formSchema = toTypedSchema(
   yup.object({
-    name: yup.string().default(base.value.name),
+    name: yup.string().min(1).default(base.value.name),
     type: yup.string().min(1).default(props.type),
     costHQPerHour: yup.number().positive().default(props.costHQPerHour),
     costMetalPerHour: yup.number().positive().default(props.costMetalPerHour),
@@ -69,8 +69,6 @@ const onSubmit = handleSubmit(async (formValues) => {
       formData = { ...formData, [key]: formValues[key] };
     }
   }
-
-  console.log(formData);
 });
 
 const formHasChanges = computed(() => {
@@ -79,7 +77,7 @@ const formHasChanges = computed(() => {
 </script>
 
 <template>
-  <DialogContent class="sm:max-w-[425px]">
+  <DialogContent class="sm:max-w-[850px]">
     <DialogHeader>
       <DialogTitle>Edit the base</DialogTitle>
       <DialogDescription>
@@ -87,182 +85,176 @@ const formHasChanges = computed(() => {
       </DialogDescription>
     </DialogHeader>
     <form class="flex flex-col gap-4 py-4" @submit="onSubmit">
-      <FormField v-slot="{ componentField }" name="name" :model-value="name">
-        <FormItem class="gap-4 flex items-center">
-          <FormLabel class="text-sm font-medium text-end flex-1"
-            >Name
-          </FormLabel>
-          <div class="flex flex-col flex-2">
-            <FormControl>
-              <Input type="text" v-bind="componentField" />
-            </FormControl>
-            <FormMessage />
-          </div>
-        </FormItem>
-      </FormField>
+      <div class="flex gap-4">
+        <FormField v-slot="{ componentField }" name="name" :model-value="name">
+          <FormItem class="flex flex-col">
+            <FormLabel class="text-sm font-medium">Name </FormLabel>
+            <div class="flex flex-col flex-2">
+              <FormControl>
+                <Input type="text" v-bind="componentField" />
+              </FormControl>
+              <FormMessage />
+            </div>
+          </FormItem>
+        </FormField>
 
-      <FormField v-slot="{ componentField }" name="type" :model-value="type">
-        <FormItem class="flex gap-4 items-center">
-          <FormLabel class="text-sm font-medium text-end flex-1"
-            >Type
-          </FormLabel>
-          <div class="flex flex-col flex-2">
-            <FormControl>
-              <Input type="text" v-bind="componentField" />
-            </FormControl>
-            <FormMessage />
-          </div>
-        </FormItem>
-      </FormField>
+        <FormField v-slot="{ componentField }" name="type" :model-value="type">
+          <FormItem class="flex flex-col">
+            <FormLabel class="text-sm font-medium">Type </FormLabel>
+            <div class="flex flex-col flex-2">
+              <FormControl>
+                <Input type="text" v-bind="componentField" />
+              </FormControl>
+              <FormMessage />
+            </div>
+          </FormItem>
+        </FormField>
+      </div>
 
-      <FormField
-        v-slot="{ componentField }"
-        name="costHQPerHour"
-        :model-value="costHQPerHour"
-      >
-        <FormItem class="flex gap-4 items-center">
-          <FormLabel class="text-sm font-medium text-end flex-1"
-            >Cost HQ Per Hour
-          </FormLabel>
-          <div class="flex flex-col flex-2">
-            <FormControl>
-              <Input type="number" v-bind="componentField" />
-            </FormControl>
-            <FormMessage />
-          </div>
-        </FormItem>
-      </FormField>
+      <div class="flex gap-2">
+        <FormField
+          v-slot="{ componentField }"
+          name="costHQPerHour"
+          :model-value="costHQPerHour"
+        >
+          <FormItem class="flex flex-col">
+            <FormLabel class="text-sm font-medium">Cost HQ (Hourly)</FormLabel>
+            <div class="flex flex-col flex-2">
+              <FormControl>
+                <Input type="number" v-bind="componentField" />
+              </FormControl>
+              <FormMessage />
+            </div>
+          </FormItem>
+        </FormField>
+        <FormField
+          v-slot="{ componentField }"
+          name="costMetalPerHour"
+          :model-value="costMetalPerHour"
+        >
+          <FormItem class="flex flex-col">
+            <FormLabel class="text-sm font-medium"
+              >Cost Metal (Hourly)
+            </FormLabel>
+            <div class="flex flex-col flex-2">
+              <FormControl>
+                <Input type="number" v-bind="componentField" />
+              </FormControl>
+              <FormMessage />
+            </div>
+          </FormItem>
+        </FormField>
 
-      <FormField
-        v-slot="{ componentField }"
-        name="costMetalPerHour"
-        :model-value="costMetalPerHour"
-      >
-        <FormItem class="flex gap-4 items-center">
-          <FormLabel class="text-sm font-medium text-end flex-1"
-            >Cost Metal Per Hour
-          </FormLabel>
-          <div class="flex flex-col flex-2">
-            <FormControl>
-              <Input type="number" v-bind="componentField" />
-            </FormControl>
-            <FormMessage />
-          </div>
-        </FormItem>
-      </FormField>
+        <FormField
+          v-slot="{ componentField }"
+          name="costWoodPerHour"
+          :model-value="costWoodPerHour"
+        >
+          <FormItem class="flex flex-col">
+            <FormLabel class="text-sm font-medium"
+              >Cost Wood (Hourly)
+            </FormLabel>
+            <div class="flex flex-col flex-2">
+              <FormControl>
+                <Input type="number" v-bind="componentField" />
+              </FormControl>
+              <FormMessage />
+            </div>
+          </FormItem>
+        </FormField>
 
-      <FormField
-        v-slot="{ componentField }"
-        name="costWoodPerHour"
-        :model-value="costWoodPerHour"
-      >
-        <FormItem class="flex gap-4 items-center">
-          <FormLabel class="text-sm font-medium text-end flex-1"
-            >Cost Wood Per Hour
-          </FormLabel>
-          <div class="flex flex-col flex-2">
-            <FormControl>
-              <Input type="number" v-bind="componentField" />
-            </FormControl>
-            <FormMessage />
-          </div>
-        </FormItem>
-      </FormField>
+        <FormField
+          v-slot="{ componentField }"
+          name="costStonePerHour"
+          :model-value="costStonePerHour"
+        >
+          <FormItem class="flex flex-col">
+            <FormLabel class="text-sm font-medium"
+              >Cost Stone (Hourly)
+            </FormLabel>
+            <div class="flex flex-col flex-2">
+              <FormControl>
+                <Input type="number" v-bind="componentField" />
+              </FormControl>
+              <FormMessage />
+            </div>
+          </FormItem>
+        </FormField>
+      </div>
 
-      <FormField
-        v-slot="{ componentField }"
-        name="costStonePerHour"
-        :model-value="costStonePerHour"
-      >
-        <FormItem class="flex gap-4 items-center">
-          <FormLabel class="text-sm font-medium text-end flex-1"
-            >Cost Stone Per Hour
-          </FormLabel>
-          <div class="flex flex-col flex-2">
-            <FormControl>
-              <Input type="number" v-bind="componentField" />
-            </FormControl>
-            <FormMessage />
-          </div>
-        </FormItem>
-      </FormField>
+      <div class="flex gap-2">
+        <FormField
+          v-slot="{ componentField }"
+          name="costHQ"
+          :model-value="costHQ"
+        >
+          <FormItem class="flex flex-col">
+            <FormLabel class="text-sm font-medium">Cost HQ </FormLabel>
+            <div class="flex flex-col flex-2">
+              <FormControl>
+                <Input type="number" v-bind="componentField" />
+              </FormControl>
+              <FormMessage />
+            </div>
+          </FormItem>
+        </FormField>
 
-      <FormField
-        v-slot="{ componentField }"
-        name="costHQ"
-        :model-value="costHQ"
-      >
-        <FormItem class="flex gap-4 items-center">
-          <FormLabel class="text-sm font-medium text-end flex-1"
-            >Cost HQ
-          </FormLabel>
-          <div class="flex flex-col flex-2">
-            <FormControl>
-              <Input type="number" v-bind="componentField" />
-            </FormControl>
-            <FormMessage />
-          </div>
-        </FormItem>
-      </FormField>
+        <FormField
+          v-slot="{ componentField }"
+          name="costStone"
+          :model-value="costStone"
+        >
+          <FormItem class="flex flex-col">
+            <FormLabel class="text-sm font-medium">Cost Stone </FormLabel>
+            <div class="flex flex-col flex-2">
+              <FormControl>
+                <Input type="number" v-bind="componentField" />
+              </FormControl>
+              <FormMessage />
+            </div>
+          </FormItem>
+        </FormField>
 
-      <FormField
-        v-slot="{ componentField }"
-        name="costStone"
-        :model-value="costStone"
-      >
-        <FormItem class="flex gap-4 items-center">
-          <FormLabel class="text-sm font-medium text-end flex-1"
-            >Cost Stone
-          </FormLabel>
-          <div class="flex flex-col flex-2">
-            <FormControl>
-              <Input type="number" v-bind="componentField" />
-            </FormControl>
-            <FormMessage />
-          </div>
-        </FormItem>
-      </FormField>
+        <FormField
+          v-slot="{ componentField }"
+          name="costMetal"
+          :model-value="costMetal"
+        >
+          <FormItem class="flex flex-col">
+            <FormLabel class="text-sm font-medium">Cost Metal </FormLabel>
+            <div class="flex flex-col flex-2">
+              <FormControl>
+                <Input type="number" v-bind="componentField" />
+              </FormControl>
+              <FormMessage />
+            </div>
+          </FormItem>
+        </FormField>
 
-      <FormField
-        v-slot="{ componentField }"
-        name="costMetal"
-        :model-value="costMetal"
-      >
-        <FormItem class="flex gap-4 items-center">
-          <FormLabel class="text-sm font-medium text-end flex-1"
-            >Cost Metal
-          </FormLabel>
-          <div class="flex flex-col flex-2">
-            <FormControl>
-              <Input type="number" v-bind="componentField" />
-            </FormControl>
-            <FormMessage />
-          </div>
-        </FormItem>
-      </FormField>
+        <FormField
+          v-slot="{ componentField }"
+          name="costWood"
+          :model-value="costWood"
+        >
+          <FormItem class="flex flex-col">
+            <FormLabel class="text-sm font-medium">CostWood </FormLabel>
+            <div class="flex flex-col flex-2">
+              <FormControl>
+                <Input type="number" v-bind="componentField" />
+              </FormControl>
+              <FormMessage />
+            </div>
+          </FormItem>
+        </FormField>
+      </div>
 
-      <FormField
-        v-slot="{ componentField }"
-        name="costWood"
-        :model-value="costWood"
-      >
-        <FormItem class="flex gap-4 items-center">
-          <FormLabel class="text-sm font-medium text-end flex-1"
-            >CostWood
-          </FormLabel>
-          <div class="flex flex-col flex-2">
-            <FormControl>
-              <Input type="number" v-bind="componentField" />
-            </FormControl>
-            <FormMessage />
-          </div>
-        </FormItem>
-      </FormField>
       <DialogFooter>
         <Button
           variant="default"
           type="submit"
-          :disabled="isSubmitting || formHasChanges"
+          :disabled="
+            isSubmitting || formHasChanges || Object.keys(errors).length
+          "
           >Save changes</Button
         >
       </DialogFooter>
