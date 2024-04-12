@@ -5,6 +5,7 @@ interface UserPayload {
 interface UserCredentialPayload {
   token: string;
 }
+
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     authenticated: false,
@@ -22,8 +23,10 @@ export const useAuthStore = defineStore("auth", {
 
   actions: {
     async authenticatedUser({ email, password }: UserPayload) {
+      const config = useRuntimeConfig();
+
       const { data, pending, error }: any = await useFetch(
-        "http://localhost:8888/api/v1/auth/login",
+        `http://${config.public.backendUrl}:${config.public.backendPort}/${config.public.apiPrefix}/${config.public.apiVersion}/auth/login`,
         {
           method: "post",
           headers: { "Content-Type": "application/json" },

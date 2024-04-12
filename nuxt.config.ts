@@ -1,5 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      backendUrl: process.env.URL_BACKEND,
+      backendPort: process.env.PORT_BACKEND,
+      apiPrefix: process.env.API_PREFIX,
+      apiVersion: process.env.API_VERSION,
+    },
+  },
   devtools: { enabled: true },
   css: ["~/assets/css/main.css"],
   modules: [

@@ -133,8 +133,9 @@ const { handleSubmit, isSubmitting, resetForm, values, isFieldDirty, errors } =
 
 const onSubmit = handleSubmit(
   async (values) => {
+    const config = useRuntimeConfig();
     const { data, error } = await useFetch(
-      "http://localhost:8888/api/v1/auth/register",
+      `http://${config.public.backendUrl}:${config.public.backendPort}/${config.public.apiPrefix}/${config.public.apiVersion}`,
       {
         method: "POST",
         body: {

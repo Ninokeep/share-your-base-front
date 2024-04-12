@@ -255,7 +255,9 @@ const formHasChanges = computed(() => {
           :disabled="
             isSubmitting || formHasChanges || Object.keys(errors).length
           "
-          >Save changes</Button
+        >
+          <Loader2 class="w-4 h-4 mr-2 animate-spin" v-if="isSubmitting" /> Save
+          changes</Button
         >
       </DialogFooter>
     </form>
