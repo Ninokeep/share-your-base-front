@@ -44,7 +44,7 @@
               </DropdownMenuTrigger>
               <DropdownMenuContent class="mr-2">
                 <DropdownMenuLabel>
-                  <Dialog>
+                  <Dialog :open="closeDialogModal">
                     <DialogTrigger class="w-full" as-child>
                       <Button
                         size="sm"
@@ -58,6 +58,7 @@
                       :id="row.id"
                       :key="row.id"
                       @submit="(e) => updateBase(e)"
+                      @modal-state="(e) => dialogIsClosed(e)"
                     />
                   </Dialog>
                 </DropdownMenuLabel>
@@ -174,21 +175,12 @@ interface MetaInformations {
 }
 import {
   DropdownMenu,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
   DropdownMenuLabel,
   DropdownMenuContent,
 } from "@/components/ui/dropdown-menu";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -221,7 +213,13 @@ import {
 } from "@/components/ui/pagination";
 
 const currentPage = ref(1);
-
+const closeDialogModal = ref(undefined);
+function dialogIsClosed(modalIsClosed: boolean | undefined) {
+  if (!modalIsClosed) {
+    closeDialogModal.value = undefined;
+  }
+  closeDialogModal.value = false;
+}
 const { data } = await useAsyncData<ResponseAPI>("bases", () => {
   return $fetch(`http://localhost:8888/api/v1/bases?take=${8}`);
 });
@@ -232,10 +230,10 @@ async function changePage(numberPage: number) {
     `http://localhost:8888/api/v1/bases?take=${8}&page=${currentPage.value}`
   );
 }
-function updateBase(base) {
+function updateBase(base: Bases) {
   data.value?.data.forEach((item, index) => {
-    if (item.id === d.id) {
-      data.value.data[index] = { ...item, ...d };
+    if (item.id === base.id) {
+      data.value.data[index] = { ...item, ...base };
     }
   });
 }

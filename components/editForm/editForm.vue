@@ -17,6 +17,7 @@ import * as yup from "yup";
 import { useToast } from "@/components/ui/toast/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { reactive } from "vue";
+const openDialogClosed = ref(false);
 
 const config = useRuntimeConfig();
 const props = defineProps<{
@@ -51,15 +52,7 @@ const formSchema = toTypedSchema(
   })
 );
 
-const {
-  handleSubmit,
-  isSubmitting,
-  resetForm,
-  values,
-  isFieldDirty,
-  errors,
-  isFieldValid,
-} = useForm({
+const { handleSubmit, isSubmitting, values, errors } = useForm({
   validationSchema: formSchema,
 });
 
@@ -77,6 +70,13 @@ const emit = defineEmits({
     costMetal: number;
     id: number;
   }) {
+    return true;
+  },
+
+  modalState(isClosed: boolean) {
+    if (!isClosed) {
+      return false;
+    }
     return true;
   },
 });
@@ -97,7 +97,7 @@ const onSubmit = handleSubmit(async (formValues) => {
     }
   );
   if (error.value) {
-    toast({
+    return toast({
       title: "Email or password is wrong",
       description: "Can check your password or email and retry",
       variant: "destructive",
@@ -112,7 +112,9 @@ const onSubmit = handleSubmit(async (formValues) => {
       ),
     });
   } else if (data.value) {
+    openDialogClosed.value = true;
     emit("submit", data.value);
+    emit("modalState", openDialogClosed.value);
   }
 });
 
