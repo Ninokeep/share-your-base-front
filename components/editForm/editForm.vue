@@ -16,8 +16,9 @@ import {
 } from "@/components/ui/form";
 import * as yup from "yup";
 import { useToast } from "@/components/ui/toast/use-toast";
-import { ToastAction } from "@/components/ui/toast";
+import { ToastAction, Toaster } from "@/components/ui/toast";
 import { reactive } from "vue";
+
 const openDialogClosed = ref(false);
 
 const config = useRuntimeConfig();
@@ -36,7 +37,6 @@ const props = defineProps<{
 }>();
 
 const base = reactive(props);
-const { toast } = useToast();
 
 const formSchema = toTypedSchema(
   yup.object({
@@ -73,6 +73,12 @@ const emit = defineEmits({
   }) {
     return true;
   },
+  updateFailed() {
+    return false;
+  },
+  updateSuccessful() {
+    return true;
+  },
 });
 
 const onSubmit = handleSubmit(async (formValues) => {
@@ -91,23 +97,11 @@ const onSubmit = handleSubmit(async (formValues) => {
     }
   );
   if (error.value) {
-    return toast({
-      title: "Email or password is wrong",
-      description: "Can check your password or email and retry",
-      variant: "destructive",
-      action: h(
-        ToastAction,
-        {
-          altText: "Try again",
-        },
-        {
-          default: () => "Try again",
-        }
-      ),
-    });
+    emit("updateFailed");
   } else if (data.value) {
     openDialogClosed.value = true;
     emit("submit", data.value);
+    emit("updateSuccessful");
   }
 });
 

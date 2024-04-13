@@ -58,6 +58,8 @@
                       :id="row.id"
                       :key="row.id"
                       @submit="(e) => updateBase(e)"
+                      @update-failed="updateFailed"
+                      @update-successful="updateSucessful"
                     />
                   </Dialog>
                 </DropdownMenuLabel>
@@ -192,7 +194,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { ToastAction, Toaster } from "@/components/ui/toast";
 
 import DashboardLayout from "@/layouts/dashboardLayout.vue";
 import {
@@ -213,9 +214,44 @@ import {
   PaginationNext,
   PaginationPrev,
 } from "@/components/ui/pagination";
+import { useToast } from "@/components/ui/toast/use-toast";
+import { ToastAction, Toaster } from "@/components/ui/toast";
+
+const { toast } = useToast();
 
 const currentPage = ref(1);
+const updateSucessful = () => {
+  return toast({
+    title: "Update data !",
+    description: "sucessful",
+    action: h(
+      ToastAction,
+      {
+        altText: "Ok",
+      },
+      {
+        default: () => "Ok",
+      }
+    ),
+  });
+};
 
+const updateFailed = () => {
+  return toast({
+    title: "Update failed !",
+    description: "Retry please",
+    variant: "destructive",
+    action: h(
+      ToastAction,
+      {
+        altText: "Try again",
+      },
+      {
+        default: () => "Try again",
+      }
+    ),
+  });
+};
 const { data } = await useAsyncData<ResponseAPI>("bases", () => {
   return $fetch(`http://localhost:8888/api/v1/bases?take=${8}`);
 });
