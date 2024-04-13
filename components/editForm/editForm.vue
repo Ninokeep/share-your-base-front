@@ -5,6 +5,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogClose,
 } from "@/components/ui/dialog";
 import {
   FormControl,
@@ -72,13 +73,6 @@ const emit = defineEmits({
   }) {
     return true;
   },
-
-  modalState(isClosed: boolean) {
-    if (!isClosed) {
-      return false;
-    }
-    return true;
-  },
 });
 
 const onSubmit = handleSubmit(async (formValues) => {
@@ -114,7 +108,6 @@ const onSubmit = handleSubmit(async (formValues) => {
   } else if (data.value) {
     openDialogClosed.value = true;
     emit("submit", data.value);
-    emit("modalState", openDialogClosed.value);
   }
 });
 
@@ -296,16 +289,18 @@ const formHasChanges = computed(() => {
       </div>
 
       <DialogFooter>
-        <Button
-          variant="default"
-          type="submit"
-          :disabled="
-            isSubmitting || formHasChanges || Object.keys(errors).length
-          "
-        >
-          <Loader2 class="w-4 h-4 mr-2 animate-spin" v-if="isSubmitting" /> Save
-          changes</Button
-        >
+        <DialogClose>
+          <Button
+            variant="default"
+            type="submit"
+            :disabled="
+              isSubmitting || formHasChanges || Object.keys(errors).length
+            "
+          >
+            <Loader2 class="w-4 h-4 mr-2 animate-spin" v-if="isSubmitting" />
+            Save changes</Button
+          >
+        </DialogClose>
       </DialogFooter>
     </form>
   </DialogContent>

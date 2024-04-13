@@ -44,7 +44,7 @@
               </DropdownMenuTrigger>
               <DropdownMenuContent class="mr-2">
                 <DropdownMenuLabel>
-                  <Dialog :open="closeDialogModal">
+                  <Dialog>
                     <DialogTrigger class="w-full" as-child>
                       <Button
                         size="sm"
@@ -58,7 +58,6 @@
                       :id="row.id"
                       :key="row.id"
                       @submit="(e) => updateBase(e)"
-                      @modal-state="(e) => dialogIsClosed(e)"
                     />
                   </Dialog>
                 </DropdownMenuLabel>
@@ -213,13 +212,7 @@ import {
 } from "@/components/ui/pagination";
 
 const currentPage = ref(1);
-const closeDialogModal = ref(undefined);
-function dialogIsClosed(modalIsClosed: boolean | undefined) {
-  if (!modalIsClosed) {
-    closeDialogModal.value = undefined;
-  }
-  closeDialogModal.value = false;
-}
+
 const { data } = await useAsyncData<ResponseAPI>("bases", () => {
   return $fetch(`http://localhost:8888/api/v1/bases?take=${8}`);
 });
