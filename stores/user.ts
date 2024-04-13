@@ -39,7 +39,7 @@ export const useAuthStore = defineStore("auth", {
       this.loading = pending;
       if (error.value) return true;
       if (data.value) {
-        const token = useCookie("token");
+        const token = useCookie("token", { maxAge: 14400 });
         token.value = data?.value?.access_token;
         this.authenticated = true;
         this.user.email = "jean";

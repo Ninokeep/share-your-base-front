@@ -130,6 +130,7 @@
         </PaginationList>
       </Pagination>
     </Table>
+    <Toaster />
   </DashboardLayout>
 </template>
 
@@ -191,6 +192,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { ToastAction, Toaster } from "@/components/ui/toast";
+
 import DashboardLayout from "@/layouts/dashboardLayout.vue";
 import {
   Table,

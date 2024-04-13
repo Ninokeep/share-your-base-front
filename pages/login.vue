@@ -96,70 +96,11 @@ const formSchema = toTypedSchema(
   })
 );
 
-const { handleSubmit, isSubmitting, resetForm, values, isFieldDirty, errors } =
-  useForm({
-    validationSchema: formSchema,
-  });
+const { handleSubmit, isSubmitting, resetForm, isFieldDirty } = useForm({
+  validationSchema: formSchema,
+});
 const authStore = useAuthStore();
 const { authenticated } = storeToRefs(useAuthStore());
-/* const onSubmit = handleSubmit(
-  async (values) => {
-    const { data, error } = await useFetch(
-      "http://localhost:8888/api/v1/auth/login",
-      {
-        method: "POST",
-        body: {
-          email: values.email,
-          password: values.password,
-        },
-      }
-    );
-
-    if (error.value) {
-      toast({
-        title: "Email or password is wrong",
-        description: "Can check your password or email and retry",
-        variant: "destructive",
-        action: h(
-          ToastAction,
-          {
-            altText: "Try again",
-          },
-          {
-            default: () => "Try again",
-          }
-        ),
-      });
-    }
-
-    if (data) {
-      const cookies = useCookie("user");
-      token.value = data.value as string;
-
-      cookies.value = data.value.access_token;
-      website.setEmail(values.email);
-      website.setToken(data.value.access_token);
-    }
-    resetForm();
-  },
-  async (err) => {
-    toast({
-      title: "Something is wrong",
-      description: "Can you retry later",
-      variant: "destructive",
-      action: h(
-        ToastAction,
-        {
-          altText: "Try again",
-        },
-        {
-          default: () => "Try again",
-        }
-      ),
-    });
-  }
-); */
-
 const onSubmit = handleSubmit(
   async (values) => {
     const error = await authStore.authenticatedUser({
