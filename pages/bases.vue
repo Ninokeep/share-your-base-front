@@ -53,7 +53,12 @@
                         ><Icon Remove name="mdi:pen" class="mr-2" />Edit</Button
                       >
                     </DialogTrigger>
-                    <EditForm v-bind="row" />
+                    <EditForm
+                      v-bind="row"
+                      :id="row.id"
+                      :key="row.id"
+                      @submit="(e) => updateBase(e)"
+                    />
                   </Dialog>
                 </DropdownMenuLabel>
                 <DropdownMenuLabel>
@@ -226,6 +231,13 @@ async function changePage(numberPage: number) {
   data.value = await $fetch(
     `http://localhost:8888/api/v1/bases?take=${8}&page=${currentPage.value}`
   );
+}
+function updateBase(base) {
+  data.value?.data.forEach((item, index) => {
+    if (item.id === d.id) {
+      data.value.data[index] = { ...item, ...d };
+    }
+  });
 }
 </script>
 

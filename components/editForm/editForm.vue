@@ -14,7 +14,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import * as yup from "yup";
+import { useToast } from "@/components/ui/toast/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import { reactive } from "vue";
 
+const config = useRuntimeConfig();
 const props = defineProps<{
   name: string;
   type: string;
@@ -26,22 +30,24 @@ const props = defineProps<{
   costWood: number;
   costHQ: number;
   costMetal: number;
+  id: number;
 }>();
 
-const base = ref(props);
+const base = reactive(props);
+const { toast } = useToast();
 
 const formSchema = toTypedSchema(
   yup.object({
-    name: yup.string().min(1).default(base.value.name),
-    type: yup.string().min(1).default(props.type),
-    costHQPerHour: yup.number().positive().default(props.costHQPerHour),
-    costMetalPerHour: yup.number().positive().default(props.costMetalPerHour),
-    costWoodPerHour: yup.number().positive().default(props.costWoodPerHour),
-    costStonePerHour: yup.number().positive().default(props.costStonePerHour),
-    costStone: yup.number().positive().default(props.costStone),
-    costWood: yup.number().positive().default(props.costWood),
-    costHQ: yup.number().positive().default(props.costHQ),
-    costMetal: yup.number().positive().default(props.costMetal),
+    name: yup.string().min(1).default(base.name),
+    type: yup.string().min(1).default(base.type),
+    costHQPerHour: yup.number().positive().default(base.costHQPerHour),
+    costMetalPerHour: yup.number().positive().default(base.costMetalPerHour),
+    costWoodPerHour: yup.number().positive().default(base.costWoodPerHour),
+    costStonePerHour: yup.number().positive().default(base.costStonePerHour),
+    costStone: yup.number().positive().default(base.costStone),
+    costWood: yup.number().positive().default(base.costWood),
+    costHQ: yup.number().positive().default(base.costHQ),
+    costMetal: yup.number().positive().default(base.costMetal),
   })
 );
 
@@ -57,22 +63,61 @@ const {
   validationSchema: formSchema,
 });
 
-function getBase() {
-  console.log(base.value);
-}
+const emit = defineEmits({
+  submit(payload: {
+    name: string;
+    type: string;
+    costHQPerHour: number;
+    costMetalPerHour: number;
+    costWoodPerHour: number;
+    costStonePerHour: number;
+    costStone: number;
+    costWood: number;
+    costHQ: number;
+    costMetal: number;
+    id: number;
+  }) {
+    return true;
+  },
+});
 
 const onSubmit = handleSubmit(async (formValues) => {
   let formData = {};
 
-  for (const [key] of Object.entries(base.value)) {
-    if (base.value[key] !== formValues[key]) {
+  for (const [key] of Object.entries(base)) {
+    if (base[key] !== formValues[key]) {
       formData = { ...formData, [key]: formValues[key] };
     }
+  }
+  const { data, error } = await useFetch(
+    `http://${config.public.backendUrl}:${config.public.backendPort}/${config.public.apiPrefix}/${config.public.apiVersion}/bases/${props.id}`,
+    {
+      method: "PUT",
+      body: formData,
+    }
+  );
+  if (error.value) {
+    toast({
+      title: "Email or password is wrong",
+      description: "Can check your password or email and retry",
+      variant: "destructive",
+      action: h(
+        ToastAction,
+        {
+          altText: "Try again",
+        },
+        {
+          default: () => "Try again",
+        }
+      ),
+    });
+  } else if (data.value) {
+    emit("submit", data.value);
   }
 });
 
 const formHasChanges = computed(() => {
-  return compareTwoObjects(base.value, values);
+  return compareTwoObjects(base, values);
 });
 </script>
 

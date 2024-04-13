@@ -95,7 +95,6 @@ const formSchema = toTypedSchema(
     password: yup.string().required().min(8),
   })
 );
-const token = ref<string>("");
 
 const { handleSubmit, isSubmitting, resetForm, values, isFieldDirty, errors } =
   useForm({
