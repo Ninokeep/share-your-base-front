@@ -3,6 +3,7 @@
     <h1 class="text-2xl font-bold px-4 py-2">Bases</h1>
     <p class="text-muted-foreground px-4">List of the bases.</p>
     <Separator class="mt-4" />
+
     <Table>
       <TableHeader>
         <TableRow>
@@ -96,42 +97,42 @@
           </TableCell>
         </TableRow>
       </TableBody>
-      <Pagination
-        v-slot="{ page }"
-        class="mt-3 ml-3"
-        :total="data?.meta?.itemCount"
-        :sibling-count="1"
-        show-edges
-        :default-page="1"
-        :items-per-page="data?.meta?.take"
-      >
-        <PaginationList v-slot="{ items }" class="flex items-center gap-1">
-          <PaginationFirst />
-          <PaginationPrev />
-
-          <template v-for="(item, index) in items">
-            <PaginationListItem
-              v-if="item.type === 'page'"
-              :key="index"
-              :value="item.value"
-              as-child
-            >
-              <Button
-                class="w-10 h-10 p-0"
-                :variant="item.value === page ? 'default' : 'outline'"
-                @click="changePage(item.value)"
-              >
-                {{ item.value }}
-              </Button>
-            </PaginationListItem>
-            <PaginationEllipsis v-else :key="item.type" :index="index" />
-          </template>
-
-          <PaginationNext />
-          <PaginationLast />
-        </PaginationList>
-      </Pagination>
     </Table>
+    <Pagination
+      v-slot="{ page }"
+      class="mt-3 ml-3"
+      :total="data?.meta?.itemCount"
+      :sibling-count="1"
+      show-edges
+      :default-page="1"
+      :items-per-page="data?.meta?.take"
+    >
+      <PaginationList v-slot="{ items }" class="flex items-center gap-1">
+        <PaginationFirst />
+        <PaginationPrev />
+
+        <template v-for="(item, index) in items">
+          <PaginationListItem
+            v-if="item.type === 'page'"
+            :key="index"
+            :value="item.value"
+            as-child
+          >
+            <Button
+              class="w-10 h-10 p-0"
+              :variant="item.value === page ? 'default' : 'outline'"
+              @click="changePage(item.value)"
+            >
+              {{ item.value }}
+            </Button>
+          </PaginationListItem>
+          <PaginationEllipsis v-else :key="item.type" :index="index" />
+        </template>
+
+        <PaginationNext />
+        <PaginationLast />
+      </PaginationList>
+    </Pagination>
     <Toaster />
   </DashboardLayout>
 </template>
@@ -194,7 +195,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-
+import { Skeleton } from "@/components/ui/skeleton";
 import DashboardLayout from "@/layouts/dashboardLayout.vue";
 import {
   Table,
@@ -218,6 +219,7 @@ import { useToast } from "@/components/ui/toast/use-toast";
 import { ToastAction, Toaster } from "@/components/ui/toast";
 
 const { toast } = useToast();
+const config = useRuntimeConfig();
 
 const currentPage = ref(1);
 const updateSucessful = () => {
@@ -252,14 +254,20 @@ const updateFailed = () => {
     ),
   });
 };
-const { data } = await useAsyncData<ResponseAPI>("bases", () => {
-  return $fetch(`http://localhost:8888/api/v1/bases?take=${8}`);
+const { data, pending } = await useAsyncData<ResponseAPI>("bases", () => {
+  return $fetch(
+    `http://${config.public.backendUrl}:${config.public.backendPort}/${
+      config.public.apiPrefix
+    }/${config.public.apiVersion}/bases?take=${8}`
+  );
 });
 
 async function changePage(numberPage: number) {
   currentPage.value = numberPage;
   data.value = await $fetch(
-    `http://localhost:8888/api/v1/bases?take=${8}&page=${currentPage.value}`
+    `http://${config.public.backendUrl}:${config.public.backendPort}/${
+      config.public.apiPrefix
+    }/${config.public.apiVersion}/bases?take=${8}&page=${currentPage.value}`
   );
 }
 function updateBase(base: Bases) {
