@@ -105,7 +105,8 @@ const onSubmit = handleSubmit(async (formValues) => {
 });
 
 const formHasChanges = computed(() => {
-  return compareTwoObjects(base, values);
+  const baseProps = omitProperties(base, ["id"]);
+  return compareTwoObjects(baseProps, values);
 });
 </script>
 
