@@ -15,6 +15,7 @@ export const useAuthStore = defineStore("auth", {
       email: "",
       role: "",
       password: "",
+      id: undefined,
     },
   }),
   getters: {

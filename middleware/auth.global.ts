@@ -9,6 +9,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     user.value.email = data?.value?.email;
     user.value.role = data?.value?.role;
     user.value.username = data?.value?.username;
+    user.value.id = data?.value?.id;
   }
 
   if (!token.value && (to?.name === "login" || to?.name === "register")) return;

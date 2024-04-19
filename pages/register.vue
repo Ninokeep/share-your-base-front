@@ -135,7 +135,7 @@ const onSubmit = handleSubmit(
   async (values) => {
     const config = useRuntimeConfig();
     const { data, error } = await useFetch(
-      `http://${config.public.backendUrl}:${config.public.backendPort}/${config.public.apiPrefix}/${config.public.apiVersion}`,
+      `http://${config.public.backendUrl}:${config.public.backendPort}/${config.public.apiPrefix}/${config.public.apiVersion}/auth/register`,
       {
         method: "POST",
         body: {

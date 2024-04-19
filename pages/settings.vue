@@ -6,7 +6,11 @@
     </p>
     <Separator class="mt-4" />
     <form class="pb-5 px-5 w-2/4 space-y-3 mt-4" @submit="onSubmit">
-      <FormField v-slot="{ componentField }" name="username">
+      <FormField
+        v-slot="{ componentField }"
+        name="username"
+        :model-value="user.username"
+      >
         <FormItem>
           <FormLabel class="text-sm font-medium">Username</FormLabel>
           <FormControl>
@@ -20,7 +24,11 @@
         </FormItem>
       </FormField>
 
-      <FormField v-slot="{ componentField }" name="password">
+      <FormField
+        v-slot="{ componentField }"
+        name="password"
+        :model-value="user.password"
+      >
         <FormItem>
           <FormLabel class="text-sm font-medium">Password</FormLabel>
           <FormControl>
@@ -31,7 +39,11 @@
         </FormItem>
       </FormField>
 
-      <FormField v-slot="{ componentField }" name="email">
+      <FormField
+        v-slot="{ componentField }"
+        name="email"
+        :model-value="user.email"
+      >
         <FormItem>
           <FormLabel class="text-sm font-medium">Email</FormLabel>
           <FormControl>
@@ -52,6 +64,7 @@
         Update
       </Button>
     </form>
+    <Toaster />
   </DashboardLayout>
 </template>
 
@@ -61,6 +74,9 @@ import { Separator } from "@/components/ui/separator";
 import { toTypedSchema } from "@vee-validate/yup";
 import * as yup from "yup";
 import { useForm } from "vee-validate";
+import { useToast } from "@/components/ui/toast/use-toast";
+import { ToastAction, Toaster } from "@/components/ui/toast";
+
 import {
   FormControl,
   FormField,
@@ -69,7 +85,9 @@ import {
   FormMessage,
   FormDescription,
 } from "@/components/ui/form";
+
 const authStore = useAuthStore();
+const { toast } = useToast();
 
 const formSchema = toTypedSchema(
   yup.object({
@@ -77,8 +95,8 @@ const formSchema = toTypedSchema(
       .string()
       .email("The email format is wrong")
       .default(authStore.user.email),
-    password: yup.string().min(8).notRequired(),
-    username: yup.string().min(1).trim().default(authStore.user.username),
+    password: yup.string().notRequired(),
+    username: yup.string().trim().default(authStore.user.username),
   })
 );
 
@@ -97,24 +115,65 @@ const {
 } = useForm({
   validationSchema: formSchema,
 });
-
+const config = useRuntimeConfig();
+const user = omitProperties(authStore.user, ["role", "id"]);
+const userId = omitProperties(authStore.user, ["role"]);
+const cookie = useCookie("token");
 const onSubmit = handleSubmit(async (formValues) => {
-  const user = omitProperties(authStore.user, ["role"]);
   user.password = undefined;
-  Object.values(formValues).filter((e) => !Object.values(user).includes(e));
-
+  // Object.values(formValues).filter((e) => !Object.values(user).includes(e));
+  console.log(formValues);
   let formData = {};
   for (const [key] of Object.entries(user)) {
     if (user[key] !== formValues[key]) {
       formData = { ...formData, [key]: formValues[key] };
     }
   }
-
-  console.log(formData);
+  const { data, error } = await useFetch(
+    `http://${config.public.backendUrl}:${config.public.backendPort}/${config.public.apiPrefix}/${config.public.apiVersion}/users/${userId.id}`,
+    {
+      method: "PUT",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${cookie.value}`,
+      },
+    }
+  );
+  if (error.value) {
+    return toast({
+      title: "Update failed !",
+      description: "Retry please",
+      variant: "destructive",
+      action: h(
+        ToastAction,
+        {
+          altText: "Try again",
+        },
+        {
+          default: () => "Try again",
+        }
+      ),
+    });
+  } else if (data.value) {
+    return toast({
+      title: "Informations account updated",
+      description: "Success",
+      variant: "default",
+      action: h(
+        ToastAction,
+        {
+          altText: "Ok",
+        },
+        {
+          default: () => "Ok",
+        }
+      ),
+    });
+  }
 });
 
 const formHasChanges = computed(() => {
-  const user = omitProperties(authStore.user, ["role"]);
+  const user = omitProperties(authStore.user, ["role", "id"]);
   user.password = undefined;
   return compareTwoObjects(user, values);
 });
