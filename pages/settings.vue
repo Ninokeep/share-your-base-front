@@ -60,8 +60,11 @@
         </FormItem>
       </FormField>
 
-      <Button type="submit" :disabled="isSubmitting || formHasChanges">
-        Update
+      <Button
+        type="submit"
+        :disabled="isSubmitting || formHasChanges || formErrors"
+      >
+        Update {{ formHasChanges }}
       </Button>
     </form>
     <Toaster />
@@ -100,10 +103,6 @@ const formSchema = toTypedSchema(
   })
 );
 
-function fieldHasError() {
-  return Object.values(errors.value).length > 0 ? true : false;
-}
-
 const {
   handleSubmit,
   isSubmitting,
@@ -115,12 +114,16 @@ const {
 } = useForm({
   validationSchema: formSchema,
 });
+
+const formErrors = computed(() =>
+  Object.keys(errors.value).length > 0 ? true : false
+);
 const config = useRuntimeConfig();
 const user = omitProperties(authStore.user, ["role", "id"]);
 const userId = omitProperties(authStore.user, ["role"]);
 const cookie = useCookie("token");
+
 const onSubmit = handleSubmit(async (formValues) => {
-  user.password = undefined;
   // Object.values(formValues).filter((e) => !Object.values(user).includes(e));
   console.log(formValues);
   let formData = {};
@@ -174,7 +177,8 @@ const onSubmit = handleSubmit(async (formValues) => {
 
 const formHasChanges = computed(() => {
   const user = omitProperties(authStore.user, ["role", "id"]);
-  user.password = undefined;
+  user.password = "";
+
   return compareTwoObjects(user, values);
 });
 </script>
