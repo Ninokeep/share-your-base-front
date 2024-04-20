@@ -36,7 +36,7 @@
           <TableCell class="font-medium"> {{ row.costWood }} </TableCell>
           <TableCell>{{ row.costStone }}</TableCell>
           <TableCell>{{ row.rating }}</TableCell>
-          <TableCell>
+          <TableCell v-if="authStore.user.role === 'admin'">
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Button variant="ghost" size="sm">
@@ -218,6 +218,7 @@ import {
 import { useToast } from "@/components/ui/toast/use-toast";
 import { ToastAction, Toaster } from "@/components/ui/toast";
 
+const authStore = useAuthStore();
 const { toast } = useToast();
 const config = useRuntimeConfig();
 
