@@ -98,7 +98,14 @@ const formSchema = toTypedSchema(
       .string()
       .email("The email format is wrong")
       .default(authStore.user.email),
-    password: yup.string().notRequired(),
+    password: yup
+      .string()
+      .notRequired()
+      .transform((curr, obj) => (obj === "" ? null : curr))
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+        "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+      ),
     username: yup.string().trim().default(authStore.user.username),
   })
 );
@@ -125,13 +132,14 @@ const cookie = useCookie("token");
 
 const onSubmit = handleSubmit(async (formValues) => {
   // Object.values(formValues).filter((e) => !Object.values(user).includes(e));
-  console.log(formValues);
+
   let formData = {};
   for (const [key] of Object.entries(user)) {
-    if (user[key] !== formValues[key]) {
+    if (user[key] !== formValues[key] && formValues[key] !== null) {
       formData = { ...formData, [key]: formValues[key] };
     }
   }
+
   const { data, error } = await useFetch(
     `http://${config.public.backendUrl}:${config.public.backendPort}/${config.public.apiPrefix}/${config.public.apiVersion}/users/${userId.id}`,
     {
