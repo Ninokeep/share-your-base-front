@@ -36,7 +36,7 @@
           <TableCell class="font-medium"> {{ row.costWood }} </TableCell>
           <TableCell>{{ row.costStone }}</TableCell>
           <TableCell>{{ row.rating }}</TableCell>
-          <TableCell v-if="authStore.user.role === 'admin'">
+          <TableCell v-if="userIsAdmin || baseBelongsUser(row)">
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Button variant="ghost" size="sm">
@@ -195,7 +195,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Skeleton } from "@/components/ui/skeleton";
 import DashboardLayout from "@/layouts/dashboardLayout.vue";
 import {
   Table,
@@ -263,6 +262,12 @@ const { data, pending } = await useAsyncData<ResponseAPI>("bases", () => {
   );
 });
 
+const responseUserBaseApi = await useAsyncData("userBases", () => {
+  return $fetch(
+    `http://${config.public.backendUrl}:${config.public.backendPort}/${config.public.apiPrefix}/${config.public.apiVersion}/bases/users/${authStore.user.id}`
+  );
+});
+
 async function changePage(numberPage: number) {
   currentPage.value = numberPage;
   data.value = await $fetch(
@@ -278,6 +283,18 @@ function updateBase(base: Bases) {
     }
   });
 }
+
+const baseBelongsUser = ({ id }: number) => {
+  if (responseUserBaseApi.data.value) {
+    return responseUserBaseApi.data.value[0].bases.some((i) => i.id === id);
+  }
+
+  return false;
+};
+
+const userIsAdmin = computed(() => {
+  return authStore.user.role === "admin" ? true : false;
+});
 </script>
 
 <style scoped></style>
