@@ -19,6 +19,11 @@ const sidebarNavItems: Item[] = [
     href: "/settings",
     icon: "iconamoon:settings-bold",
   },
+  {
+    title: "Users",
+    href: "/users",
+    icon: "mdi:users",
+  },
 ];
 
 const route = useRoute();
