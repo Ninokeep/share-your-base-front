@@ -1,34 +1,12 @@
 import type { ColumnDef } from "@tanstack/vue-table";
 import { h } from "vue";
-
-export const columns: ColumnDef<any>[] = [
-  {
-    accessorKey: "amount",
-    header: () => h("div", { class: "text-right" }, "Amount"),
-    cell: ({ row }) => {
-      const amount = Number.parseFloat(row.getValue("amount"));
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return h("div", { class: "text-right font-medium" }, formatted);
-    },
-  },
-  {
-    accessorKey: "id",
-    header: () => h("div", { class: "text-right" }, "Id"),
-    cell: ({ row }) => {
-      return h("div", { class: "text-right font-medium" }, row.getValue("id"));
-    },
-  },
-];
+import DropdownAction from "@/components/tableData/table-data-dropdown.vue";
 
 export const generateColumns = (
   arrayOfKeys: string[],
   ommitProperties: string[]
 ) => {
-  return arrayOfKeys
+  const columnHeader = arrayOfKeys
     .map((key: string) => {
       return {
         accessorKey: key,
@@ -43,4 +21,21 @@ export const generateColumns = (
       };
     })
     .filter((data) => !ommitProperties.includes(data.accessorKey));
+
+  const actions = {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      const payment = row.original;
+      return h(
+        "div",
+        { class: "relative" },
+        h(DropdownAction, {
+          payment,
+        })
+      );
+    },
+  };
+
+  return [...columnHeader, ...[actions]];
 };

@@ -4,14 +4,14 @@
     <p class="text-muted-foreground px-4">List of the users.</p>
     <Separator class="mt-4" />
     <TableData
-      :columns="generateColumns(getUserColumnHeader, ['bases'])"
+      :columns="generateColumns(getUserColumnHeader, ['bases', 'password'])"
       :data="dataTable"
     />
   </DashboardLayout>
 </template>
 
 <script lang="ts" setup>
-import { columns, generateColumns } from "@/components/tableData/column";
+import { generateColumns } from "@/components/tableData/column";
 
 interface Users {
   id: number;
