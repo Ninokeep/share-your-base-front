@@ -3,126 +3,16 @@
     <h1 class="text-2xl font-bold px-4 py-2">Users</h1>
     <p class="text-muted-foreground px-4">List of the users.</p>
     <Separator class="mt-4" />
-
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead class="w-[200px]"> Email </TableHead>
-          <TableHead>Username</TableHead>
-          <TableHead>DraftBase</TableHead>
-          <TableHead>Role</TableHead>
-          <TableHead>Status Account</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        <TableRow v-for="row in data">
-          <TableCell> {{ row.email }} </TableCell>
-          <TableCell class="font-medium"> {{ row.username }} </TableCell>
-          <TableCell>{{ row.draftBase }}</TableCell>
-          <TableCell>{{ row.role }}</TableCell>
-          <TableCell>{{ row.disabled }}</TableCell>
-          <TableCell v-if="userIsAdmin || baseBelongsUser(row)">
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <Button variant="ghost" size="sm">
-                  <Icon name="tabler:dots"></Icon>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent class="mr-2">
-                <DropdownMenuLabel>
-                  <Dialog>
-                    <DialogTrigger class="w-full" as-child>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        class="w-full justify-start"
-                        ><Icon Remove name="mdi:pen" class="mr-2" />Edit</Button
-                      >
-                    </DialogTrigger>
-                    <EditForm
-                      v-bind="row"
-                      :id="row.id"
-                      :key="row.id"
-                      @submit="(e) => updateBase(e)"
-                      @update-failed="updateFailed"
-                      @update-successful="updateSucessful"
-                    />
-                  </Dialog>
-                </DropdownMenuLabel>
-                <DropdownMenuLabel>
-                  <AlertDialog>
-                    <AlertDialogTrigger class="w-full"
-                      ><Button
-                        variant="destructive"
-                        class="w-full justify-start"
-                        size="sm"
-                      >
-                        <Icon name="mdi:trash" class="mr-2" />Remove
-                      </Button></AlertDialogTrigger
-                    >
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle
-                          >Are you absolutely sure?</AlertDialogTitle
-                        >
-                        <AlertDialogDescription>
-                          This action cannot be undone. This will permanently
-                          delete your database from our servers.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction>Continue</AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </DropdownMenuLabel>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
-    <Pagination
-      v-slot="{ page }"
-      class="mt-3 ml-3"
-      :total="data?.meta?.itemCount"
-      :sibling-count="1"
-      show-edges
-      :default-page="1"
-      :items-per-page="data?.meta?.take"
-    >
-      <PaginationList v-slot="{ items }" class="flex items-center gap-1">
-        <PaginationFirst />
-        <PaginationPrev />
-
-        <template v-for="(item, index) in items">
-          <PaginationListItem
-            v-if="item.type === 'page'"
-            :key="index"
-            :value="item.value"
-            as-child
-          >
-            <Button
-              class="w-10 h-10 p-0"
-              :variant="item.value === page ? 'default' : 'outline'"
-              @click="changePage(item.value)"
-            >
-              {{ item.value }}
-            </Button>
-          </PaginationListItem>
-          <PaginationEllipsis v-else :key="item.type" :index="index" />
-        </template>
-
-        <PaginationNext />
-        <PaginationLast />
-      </PaginationList>
-    </Pagination>
-    <Toaster />
+    <TableData
+      :columns="generateColumns(getUserColumnHeader, ['bases'])"
+      :data="dataTable"
+    />
   </DashboardLayout>
 </template>
 
 <script lang="ts" setup>
+import { columns, generateColumns } from "@/components/tableData/column";
+
 interface Users {
   id: number;
 
@@ -190,11 +80,27 @@ import {
 } from "@/components/ui/pagination";
 import { useToast } from "@/components/ui/toast/use-toast";
 import { ToastAction, Toaster } from "@/components/ui/toast";
-import { computed } from "vue";
+import { computed, ref } from "vue";
+import TableData from "../components/tableData/table-data.vue";
+
+const dataTable = ref<any[]>([]);
+const config = useRuntimeConfig();
+
+// async function getData() {
+//   const response = await $fetch(
+//     `http://${config.public.backendUrl}:${config.public.backendPort}/${config.public.apiPrefix}/${config.public.apiVersion}/users`
+//   );
+//   return response;
+// }
+
+const dataUser = await useFetch(
+  `http://${config.public.backendUrl}:${config.public.backendPort}/${config.public.apiPrefix}/${config.public.apiVersion}/users`
+);
+
+dataTable.value = dataUser.data.value;
 
 const authStore = useAuthStore();
 const { toast } = useToast();
-const config = useRuntimeConfig();
 
 const currentPage = ref(1);
 const updateSucessful = () => {
@@ -267,6 +173,10 @@ const baseBelongsUser = ({ id }: number) => {
 const userIsAdmin = computed(() => {
   return authStore.user.role === "admin" ? true : false;
 });
+
+const getUserColumnHeader = computed(() =>
+  Object.keys(dataTable.value[0] ?? ["id"])
+);
 </script>
 
 <style scoped></style>
