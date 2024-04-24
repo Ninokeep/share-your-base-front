@@ -144,24 +144,21 @@ const formHasChanges = computed(() => {
             <FormLabel class="text-sm font-medium">Status Account</FormLabel>
             <div class="flex flex-col flex-2">
               <FormControl>
-                <Select v-bind="compontendField">
+                <Select v-bind="componentField">
                   <SelectTrigger>
                     <SelectValue placeholder="Select a value" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
                       <SelectItem
-                        :value="'true'"
+                        :value="'false'"
                         :disabled="disabled === false"
                       >
                         enabled
                       </SelectItem>
                     </SelectGroup>
                     <SelectGroup>
-                      <SelectItem
-                        :value="'false'"
-                        :disabled="disabled === true"
-                      >
+                      <SelectItem :value="'true'" :disabled="disabled === true">
                         disabled
                       </SelectItem>
                     </SelectGroup>
@@ -177,7 +174,7 @@ const formHasChanges = computed(() => {
             <FormLabel class="text-sm font-medium">Role </FormLabel>
             <div class="flex flex-col flex-2">
               <FormControl>
-                <Select v-bind="compontendField">
+                <Select v-bind="componentField">
                   <SelectTrigger>
                     <SelectValue placeholder="Select a role" />
                   </SelectTrigger>
