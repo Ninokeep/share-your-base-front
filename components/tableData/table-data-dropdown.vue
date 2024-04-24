@@ -11,11 +11,11 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-defineProps<{
-  payment: {
-    id: string;
-  };
+const props = defineProps<{
+  userInformations?: object;
 }>();
+
+console.log(props.userInformations);
 </script>
 
 <template>
@@ -34,6 +34,7 @@ defineProps<{
                 ><Icon Remove name="mdi:pen" class="mr-2" />Edit</Button
               >
             </DialogTrigger>
+            <EditForm v-bind="userInformations" />
           </Dialog>
         </DropdownMenuLabel>
         <DropdownMenuLabel>

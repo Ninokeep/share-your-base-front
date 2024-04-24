@@ -1,5 +1,14 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  imports: {
+    dirs: [
+      "types/*.ts",
+      "store/*.ts",
+      "types/**/*.ts",
+      "types/*.*.ts",
+      "types/**/*.*.ts",
+    ],
+  },
   runtimeConfig: {
     public: {
       backendUrl: process.env.URL_BACKEND,
