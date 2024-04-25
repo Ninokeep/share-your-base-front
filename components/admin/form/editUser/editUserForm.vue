@@ -63,26 +63,31 @@ const emit = defineEmits({
 
 const onSubmit = handleSubmit(async (formValues) => {
   let formData = {};
-  console.log(formValues);
-  //   for (const [key] of Object.entries(user)) {
-  //     if (user[key] !== formValues[key]) {
-  //       formData = { ...formData, [key]: formValues[key] };
-  //     }
-  //   }
-  //   const { data, error } = await useFetch(
-  //     `http://${config.public.backendUrl}:${config.public.backendPort}/${config.public.apiPrefix}/${config.public.apiVersion}/bases/${props.id}`,
-  //     {
-  //       method: "PUT",
-  //       body: formData,
-  //     }
-  //   );
-  //   if (error.value) {
-  //     emit("updateFailed");
-  //   } else if (data.value) {
-  //     openDialogClosed.value = true;
-  //     emit("submit", data.value);
-  //     emit("updateSuccessful");
-  //   }
+  const cookie = useCookie("token");
+  for (const [key] of Object.entries(user)) {
+    if (user[key] !== formValues[key]) {
+      formData = { ...formData, [key]: formValues[key] };
+    }
+  }
+
+  console.log(formData);
+  const { data, error } = await useFetch(
+    `http://${config.public.backendUrl}:${config.public.backendPort}/${config.public.apiPrefix}/${config.public.apiVersion}/users/${props.id}`,
+    {
+      method: "PUT",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${cookie.value}`,
+      },
+    }
+  );
+  if (error.value) {
+    emit("updateFailed");
+  } else if (data.value) {
+    openDialogClosed.value = true;
+    emit("submit", data.value);
+    emit("updateSuccessful");
+  }
 });
 
 const formHasChanges = computed(() => {

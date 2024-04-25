@@ -26,63 +26,69 @@
           </TableCell>
           <TableCell>{{ row.draftBase }}</TableCell>
           <TableCell v-if="authStore.user.id !== row.id">
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <Button variant="ghost" size="sm">
-                  <Icon name="tabler:dots"></Icon>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent class="mr-2">
-                <DropdownMenuLabel>
-                  <Dialog>
-                    <DialogTrigger class="w-full" as-child>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        class="w-full justify-start"
-                        ><Icon Remove name="mdi:pen" class="mr-2" />Edit</Button
-                      >
-                    </DialogTrigger>
-                    <EditUserForm
-                      v-bind="row"
-                      :id="row.id"
-                      :key="row.id"
-                      @submit="(e) => updateBase(e)"
-                      @update-failed="updateFailed"
-                      @update-successful="updateSucessful"
-                    />
-                  </Dialog>
-                </DropdownMenuLabel>
-                <DropdownMenuLabel>
-                  <AlertDialog>
-                    <AlertDialogTrigger class="w-full"
-                      ><Button
-                        variant="destructive"
-                        class="w-full justify-start"
-                        size="sm"
-                      >
-                        <Icon name="mdi:trash" class="mr-2" />Remove
-                      </Button></AlertDialogTrigger
-                    >
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle
-                          >Are you absolutely sure?</AlertDialogTitle
+            <ClientOnly>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Button variant="ghost" size="sm" as="div">
+                    <Icon name="tabler:dots"></Icon>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent class="mr-2">
+                  <DropdownMenuLabel>
+                    <Dialog>
+                      <DialogTrigger class="w-full" as-child>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          class="w-full justify-start"
+                          ><Icon
+                            Remove
+                            name="mdi:pen"
+                            class="mr-2"
+                          />Edit</Button
                         >
-                        <AlertDialogDescription>
-                          This action cannot be undone. This will permanently
-                          delete your database from our servers.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction>Continue</AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </DropdownMenuLabel>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                      </DialogTrigger>
+                      <EditUserForm
+                        v-bind="row"
+                        :id="row.id"
+                        :key="row.id"
+                        @submit="(e) => updateUser(e)"
+                        @update-failed="updateFailed"
+                        @update-successful="updateSucessful"
+                      />
+                    </Dialog>
+                  </DropdownMenuLabel>
+                  <DropdownMenuLabel>
+                    <AlertDialog>
+                      <AlertDialogTrigger class="w-full"
+                        ><Button
+                          variant="destructive"
+                          class="w-full justify-start"
+                          size="sm"
+                        >
+                          <Icon name="mdi:trash" class="mr-2" />Remove
+                        </Button></AlertDialogTrigger
+                      >
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle
+                            >Are you absolutely sure?</AlertDialogTitle
+                          >
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently
+                            delete your database from our servers.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction>Continue</AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </DropdownMenuLabel>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </ClientOnly>
           </TableCell>
         </TableRow>
       </TableBody>
@@ -199,8 +205,9 @@ import { ToastAction, Toaster } from "@/components/ui/toast";
 import { computed, ref } from "vue";
 import TableData from "../components/tableData/table-data.vue";
 import EditUserForm from "~/components/admin/form/editUser/editUserForm.vue";
+import type { User } from "~/types/user";
 
-const dataTable = ref<any[]>([]);
+const dataTable = ref<User[]>([]);
 const config = useRuntimeConfig();
 
 // async function getData() {
@@ -272,10 +279,12 @@ async function changePage(numberPage: number) {
     }/${config.public.apiVersion}/bases?take=${8}&page=${currentPage.value}`
   );
 }
-function updateBase(base: Bases) {
-  data.value?.data.forEach((item, index) => {
-    if (item.id === base.id) {
-      data.value.data[index] = { ...item, ...base };
+function updateUser(user: User) {
+  console.log(data.value);
+  dataTable.value?.forEach((item, index) => {
+    if (item.id === user.id) {
+      const test = { ...item, ...user };
+      dataTable.value[index] = { ...item, ...user };
     }
   });
 }

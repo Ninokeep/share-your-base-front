@@ -19,7 +19,7 @@ import * as yup from "yup";
 import { reactive } from "vue";
 
 const openDialogClosed = ref(false);
-
+const cookie = useCookie("token");
 const config = useRuntimeConfig();
 const props = defineProps<{
   name: string;
@@ -93,6 +93,9 @@ const onSubmit = handleSubmit(async (formValues) => {
     {
       method: "PUT",
       body: formData,
+      headers: {
+        Authorization: `Bearer ${cookie.value}`,
+      },
     }
   );
   if (error.value) {
