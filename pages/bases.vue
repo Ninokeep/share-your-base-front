@@ -59,8 +59,14 @@
                       :id="row.id"
                       :key="row.id"
                       @submit="(e) => updateBase(e)"
-                      @update-failed="updateFailed"
-                      @update-successful="updateSucessful"
+                      @update-failed="
+                        showToast(
+                          'Updated Failed',
+                          'Try again please',
+                          'destructive'
+                        )
+                      "
+                      @update-successful="showToast('Updated', 'Sucessful')"
                     />
                   </Dialog>
                 </DropdownMenuLabel>
@@ -101,11 +107,11 @@
     <Pagination
       v-slot="{ page }"
       class="mt-3 ml-3"
-      :total="data?.meta?.itemCount"
-      :sibling-count="1"
+      :total="paginationState.itemCount"
+      :sibling-count="paginationState.page"
       show-edges
-      :default-page="1"
-      :items-per-page="data?.meta?.take"
+      :default-page="paginationState.page"
+      :items-per-page="paginationState.take"
     >
       <PaginationList v-slot="{ items }" class="flex items-center gap-1">
         <PaginationFirst />
@@ -138,44 +144,9 @@
 </template>
 
 <script lang="ts" setup>
-interface Bases {
-  id: number;
+import type { Base } from "@/types/base";
+import type { ResponseApi } from "@/types/response-api";
 
-  costWood: number;
-
-  costStone: number;
-
-  costMetal: number;
-
-  costHQ: number;
-  costWoodPerHour: number;
-
-  costStonePerHour: number;
-
-  costMetalPerHour: number;
-
-  costHQPerHour: number;
-
-  type: string;
-
-  name: string;
-
-  rating: number;
-}
-
-interface ResponseAPI {
-  data: Bases[];
-  meta: MetaInformations;
-}
-
-interface MetaInformations {
-  page: number;
-  take: number;
-  itemCount: number;
-  pageCount: number;
-  hasPreviousPage: boolean;
-  hasNextPage: boolean;
-}
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -214,47 +185,29 @@ import {
   PaginationNext,
   PaginationPrev,
 } from "@/components/ui/pagination";
-import { useToast } from "@/components/ui/toast/use-toast";
-import { ToastAction, Toaster } from "@/components/ui/toast";
+import { useToastAction } from "#imports";
+import { useUrlSearchParams } from "@vueuse/core";
 
+const { showToast } = useToastAction();
 const authStore = useAuthStore();
-const { toast } = useToast();
 const config = useRuntimeConfig();
+const filterStore = useFilterStore();
+const route = useRoute();
+const router = useRouter();
 
 const currentPage = ref(1);
-const updateSucessful = () => {
-  return toast({
-    title: "Update data !",
-    description: "sucessful",
-    action: h(
-      ToastAction,
-      {
-        altText: "Ok",
-      },
-      {
-        default: () => "Ok",
-      }
-    ),
-  });
-};
+const queryParams = ref(route.query.page);
 
-const updateFailed = () => {
-  return toast({
-    title: "Update failed !",
-    description: "Retry please",
-    variant: "destructive",
-    action: h(
-      ToastAction,
-      {
-        altText: "Try again",
-      },
-      {
-        default: () => "Try again",
-      }
-    ),
-  });
-};
-const { data, pending } = await useAsyncData<ResponseAPI>("bases", () => {
+let paginationState = reactive<MetaInformations>({
+  page: 1,
+  hasNextPage: false,
+  hasPreviousPage: false,
+  itemCount: 0,
+  pageCount: 0,
+  take: 0,
+});
+
+const { data, pending } = await useAsyncData<ResponseApi<Base>>("bases", () => {
   return $fetch(
     `http://${config.public.backendUrl}:${config.public.backendPort}/${
       config.public.apiPrefix
@@ -262,6 +215,34 @@ const { data, pending } = await useAsyncData<ResponseAPI>("bases", () => {
   );
 });
 
+paginationState = data?.value?.meta;
+// filterStore.setRouteParams(paginationState);
+
+watchEffect(() => {
+  if (
+    route.query.page !== undefined &&
+    Number(route.query.page) <= paginationState.pageCount &&
+    Number(route.query.page) > 0
+  ) {
+    router.push({
+      path: route.path,
+      query: {
+        ...route.query,
+        page: route.query.page,
+      },
+    });
+    paginationState.page = Number(route.query.page);
+  } else {
+    router.push({
+      path: route.path,
+      query: {
+        ...route.query,
+        page: 1,
+      },
+    });
+    paginationState.page = 1;
+  }
+});
 const responseUserBaseApi = await useAsyncData("userBases", () => {
   return $fetch(
     `http://${config.public.backendUrl}:${config.public.backendPort}/${config.public.apiPrefix}/${config.public.apiVersion}/bases/users/${authStore.user.id}`
@@ -275,8 +256,11 @@ async function changePage(numberPage: number) {
       config.public.apiPrefix
     }/${config.public.apiVersion}/bases?take=${8}&page=${currentPage.value}`
   );
+
+  paginationState = data?.value?.meta;
+  filterStore.setRouteParams(paginationState);
 }
-function updateBase(base: Bases) {
+function updateBase(base: Base) {
   data.value?.data.forEach((item, index) => {
     if (item.id === base.id) {
       data.value.data[index] = { ...item, ...base };
@@ -293,7 +277,7 @@ const baseBelongsUser = ({ id }: number) => {
 };
 
 const userIsAdmin = computed(() => {
-  return authStore.user.role === "admin" ? true : false;
+  return authStore.userIsAdmin;
 });
 </script>
 
