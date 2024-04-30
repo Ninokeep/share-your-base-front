@@ -2,8 +2,11 @@
   <DashboardLayout>
     <h1 class="text-2xl font-bold px-4 py-2">Bases</h1>
     <p class="text-muted-foreground px-4">List of the bases.</p>
+    <div class="flex">
+      <Search @change="(data) => filterBase(data)" placeholder="Search name" />
+      <InputSearchType :items="BASE_TYPES" placeholder="Select a type" />
+    </div>
     <Separator class="mt-4" />
-
     <Table>
       <TableHeader>
         <TableRow>
@@ -146,7 +149,7 @@
 <script lang="ts" setup>
 import type { Base } from "@/types/base";
 import type { ResponseApi } from "@/types/response-api";
-
+import { BASE_TYPES } from "@/utils/utils";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -279,6 +282,24 @@ const baseBelongsUser = ({ id }: number) => {
 const userIsAdmin = computed(() => {
   return authStore.userIsAdmin;
 });
+
+async function filterBase(inputValue: string) {
+  if (inputValue !== "") {
+    data.value = await $fetch(
+      `http://${config.public.backendUrl}:${config.public.backendPort}/${
+        config.public.apiPrefix
+      }/${config.public.apiVersion}/bases?take=${8}&page=${
+        currentPage.value
+      }&name=${inputValue}`
+    );
+  } else {
+    data.value = await $fetch(
+      `http://${config.public.backendUrl}:${config.public.backendPort}/${
+        config.public.apiPrefix
+      }/${config.public.apiVersion}/bases?take=${8}&page=${currentPage.value}`
+    );
+  }
+}
 </script>
 
 <style scoped></style>
