@@ -9,12 +9,16 @@
         placeholder="Select a type"
         :is-rating="false"
         label="Type"
+        search-query-name="type"
+        @change:model-value="(element) => setQueryParams(element)"
       />
       <InputSearchType
         :items="RATINGS"
+        search-query-name="rating"
         placeholder="Select a rating"
         :is-rating="true"
         label="Rating"
+        @change:model-value="(element) => setQueryParams(element)"
       />
     </div>
     <Separator class="mt-4" />
@@ -214,7 +218,7 @@ const route = useRoute();
 const router = useRouter();
 
 const currentPage = ref(1);
-const queryParams = ref(route.query.page);
+let queryParams = reactive({ page: route.query.page });
 
 let paginationState = reactive<MetaInformations>({
   page: 1,
@@ -237,6 +241,7 @@ paginationState = data?.value?.meta;
 // filterStore.setRouteParams(paginationState);
 
 watchEffect(() => {
+  //check here if the url change for the request
   if (
     route.query.page !== undefined &&
     Number(route.query.page) <= paginationState.pageCount &&
@@ -316,6 +321,26 @@ async function filterBase(inputValue: string) {
     );
     paginationState = data.value?.meta;
   }
+}
+
+function setQueryParams(obj: any) {
+  queryParams = {
+    ...queryParams,
+    ...obj,
+  };
+  const result = filterQueryParams(queryParams);
+  console.log(result);
+}
+
+function filterQueryParams(qp) {
+  let newObject = { ...qp };
+
+  return Object.keys(qp).reduce((acc, key) => {
+    if (qp[key] !== null) {
+      acc[key] = qp[key];
+    }
+    return acc;
+  }, {});
 }
 </script>
 
