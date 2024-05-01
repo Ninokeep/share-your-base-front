@@ -4,7 +4,18 @@
     <p class="text-muted-foreground px-4">List of the bases.</p>
     <div class="flex">
       <Search @change="(data) => filterBase(data)" placeholder="Search name" />
-      <InputSearchType :items="BASE_TYPES" placeholder="Select a type" />
+      <InputSearchType
+        :items="BASE_TYPES"
+        placeholder="Select a type"
+        :is-rating="false"
+        label="Type"
+      />
+      <InputSearchType
+        :items="RATINGS"
+        placeholder="Select a rating"
+        :is-rating="true"
+        label="Rating"
+      />
     </div>
     <Separator class="mt-4" />
     <Table>
@@ -25,7 +36,7 @@
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow v-for="row in data?.data">
+        <TableRow v-for="row in data?.data" v-if="data?.data.length > 0">
           <TableCell> {{ row.name }} </TableCell>
           <TableCell>{{ row.type }}</TableCell>
           <TableCell>{{ row.costHQPerHour }}</TableCell>
@@ -107,6 +118,10 @@
         </TableRow>
       </TableBody>
     </Table>
+    <p v-if="data?.data.length === 0" class="text-center mt-4">
+      Resultat not found
+    </p>
+
     <Pagination
       v-slot="{ page }"
       class="mt-3 ml-3"
@@ -292,12 +307,14 @@ async function filterBase(inputValue: string) {
         currentPage.value
       }&name=${inputValue}`
     );
+    paginationState = data.value?.meta;
   } else {
     data.value = await $fetch(
       `http://${config.public.backendUrl}:${config.public.backendPort}/${
         config.public.apiPrefix
       }/${config.public.apiVersion}/bases?take=${8}&page=${currentPage.value}`
     );
+    paginationState = data.value?.meta;
   }
 }
 </script>
