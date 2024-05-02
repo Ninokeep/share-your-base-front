@@ -271,7 +271,6 @@ watchEffect(() => {
       +route.query.rating <= 5
     ) {
       valueRatingQueryParam.value = route.query.rating;
-      console.log(+route.query.rating);
     }
   } else {
     router.push({
@@ -353,8 +352,6 @@ function setQueryParams(obj: any) {
 }
 
 function filterQueryParams(qp) {
-  let newObject = { ...qp };
-
   return Object.keys(qp).reduce((acc, key) => {
     if (qp[key] !== null) {
       acc[key] = qp[key];
