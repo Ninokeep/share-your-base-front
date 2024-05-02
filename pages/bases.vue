@@ -11,6 +11,7 @@
         label="Type"
         search-query-name="type"
         @change:model-value="(element) => setQueryParams(element)"
+        :value="valueTypeQueryParam"
       />
       <InputSearchType
         :items="RATINGS"
@@ -18,6 +19,7 @@
         placeholder="Select a rating"
         :is-rating="true"
         label="Rating"
+        :value="valueRatingQueryParam"
         @change:model-value="(element) => setQueryParams(element)"
       />
     </div>
@@ -219,7 +221,8 @@ const router = useRouter();
 
 const currentPage = ref(1);
 let queryParams = reactive({ page: route.query.page });
-
+let valueTypeQueryParam = ref("");
+let valueRatingQueryParam = ref("");
 let paginationState = reactive<MetaInformations>({
   page: 1,
   hasNextPage: false,
@@ -255,6 +258,21 @@ watchEffect(() => {
       },
     });
     paginationState.page = Number(route.query.page);
+    if (
+      route.query.type === "attack" ||
+      route.query.type === "defense" ||
+      route.query.type === "hybrid"
+    ) {
+      valueTypeQueryParam.value = route.query.type;
+    }
+    if (
+      Number(route.query.rating) &&
+      +route.query.rating >= 0 &&
+      +route.query.rating <= 5
+    ) {
+      valueRatingQueryParam.value = route.query.rating;
+      console.log(+route.query.rating);
+    }
   } else {
     router.push({
       path: route.path,
@@ -264,6 +282,8 @@ watchEffect(() => {
       },
     });
     paginationState.page = 1;
+    valueTypeQueryParam.value = "";
+    valueRatingQueryParam.value = "";
   }
 });
 const responseUserBaseApi = await useAsyncData("userBases", () => {
@@ -329,7 +349,7 @@ function setQueryParams(obj: any) {
     ...obj,
   };
   const result = filterQueryParams(queryParams);
-  console.log(result);
+  setUrlQueryParams(result);
 }
 
 function filterQueryParams(qp) {
@@ -341,6 +361,15 @@ function filterQueryParams(qp) {
     }
     return acc;
   }, {});
+}
+
+function setUrlQueryParams(queryParamsUrl) {
+  router.push({
+    path: route.path,
+    query: {
+      ...queryParamsUrl,
+    },
+  });
 }
 </script>
 

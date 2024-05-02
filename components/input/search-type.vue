@@ -1,16 +1,20 @@
 <script setup lang="ts">
-const props = defineProps<{
+export interface SearchTypeProps {
   items?: string[];
   placeholder: string;
   isRating: boolean;
   label: string;
   searchQueryName: SearchQueryType;
-}>();
+  value: string;
+}
+const props = withDefaults(defineProps<SearchTypeProps>(), {
+  value: "",
+});
 
 const emits = defineEmits<{
   (e: "change:modelValue", value: { [key: string]: string | null }): void;
 }>();
-const selectedValue = ref("");
+const selectedValue = ref(props.value);
 
 function updateSelectedValue(data: string) {
   switch (props.searchQueryName) {
@@ -75,7 +79,9 @@ function setSelectedValue(data: string) {
       @update:model-value="(data) => updateSelectedValue(data)"
     >
       <SelectTrigger>
-        <SelectValue :placeholder="placeholder" />
+        <SelectValue :placeholder="placeholder">
+          {{ selectedValue }}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent>
         <SelectLabel>{{ props.label }}</SelectLabel>

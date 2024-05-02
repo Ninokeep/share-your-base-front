@@ -12,3 +12,5 @@ export type SearchQueryType =
   | "costHQPerHour"
   | "type"
   | "rating";
+
+export type SearchType = "attack" | "defense" | "hybrid";
