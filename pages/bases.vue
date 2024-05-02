@@ -264,6 +264,7 @@ watchEffect(async () => {
       route.query.type === "hybrid"
     ) {
       valueTypeQueryParam.value = route.query.type;
+
       const baseFetched = await fetchBases();
       data.value = baseFetched.data.value;
       paginationState = data.value?.meta;
