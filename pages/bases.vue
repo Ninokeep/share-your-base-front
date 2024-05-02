@@ -243,7 +243,7 @@ const { data, pending } = await useAsyncData<ResponseApi<Base>>("bases", () => {
 paginationState = data?.value?.meta;
 // filterStore.setRouteParams(paginationState);
 
-watchEffect(() => {
+watchEffect(async () => {
   //check here if the url change for the request
   if (
     route.query.page !== undefined &&
@@ -264,6 +264,9 @@ watchEffect(() => {
       route.query.type === "hybrid"
     ) {
       valueTypeQueryParam.value = route.query.type;
+      const baseFetched = await fetchBases();
+      data.value = baseFetched.data.value;
+      paginationState = data.value?.meta;
     }
     if (
       Number(route.query.rating) &&
@@ -271,6 +274,9 @@ watchEffect(() => {
       +route.query.rating <= 5
     ) {
       valueRatingQueryParam.value = route.query.rating;
+      const baseFetched = await fetchBases();
+      data.value = baseFetched.data.value;
+      paginationState = data.value?.meta;
     }
   } else {
     router.push({
@@ -283,6 +289,8 @@ watchEffect(() => {
     paginationState.page = 1;
     valueTypeQueryParam.value = "";
     valueRatingQueryParam.value = "";
+    const baseFetched = await fetchBases();
+    data.value = baseFetched.data.value;
   }
 });
 const responseUserBaseApi = await useAsyncData("userBases", () => {
