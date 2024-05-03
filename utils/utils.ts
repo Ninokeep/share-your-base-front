@@ -1,4 +1,4 @@
-export const BASE_TYPES = ["attack", "defense", "hybrid"];
+export const BASE_TYPES = ["attack", "defensive", "hybrid"];
 export const RATINGS = ["1", "2", "3", "4", "5"];
 export type SearchQueryType =
   | "costWood"
@@ -13,4 +13,4 @@ export type SearchQueryType =
   | "type"
   | "rating";
 
-export type SearchType = "attack" | "defense" | "hybrid";
+export type SearchType = "attack" | "defensive" | "hybrid";

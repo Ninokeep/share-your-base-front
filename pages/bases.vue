@@ -210,7 +210,7 @@ import {
   PaginationPrev,
 } from "@/components/ui/pagination";
 import { useToastAction } from "#imports";
-import { useUrlSearchParams } from "@vueuse/core";
+import { useFetchBase } from "@/composables/useApi";
 
 const { showToast } = useToastAction();
 const authStore = useAuthStore();
@@ -232,6 +232,14 @@ let paginationState = reactive<MetaInformations>({
   take: 0,
 });
 
+router.push({
+  path: route.fullPath,
+  query: {
+    ...route.query,
+    page: 1,
+    take: 8,
+  },
+});
 const { data, pending } = await useAsyncData<ResponseApi<Base>>("bases", () => {
   return $fetch(
     `http://${config.public.backendUrl}:${config.public.backendPort}/${
@@ -243,57 +251,70 @@ const { data, pending } = await useAsyncData<ResponseApi<Base>>("bases", () => {
 paginationState = data?.value?.meta;
 // filterStore.setRouteParams(paginationState);
 
-watchEffect(async () => {
-  //check here if the url change for the request
-  if (
-    route.query.page !== undefined &&
-    Number(route.query.page) <= paginationState.pageCount &&
-    Number(route.query.page) > 0
-  ) {
-    router.push({
-      path: route.path,
-      query: {
-        ...route.query,
-        page: route.query.page,
-      },
-    });
-    paginationState.page = Number(route.query.page);
-    if (
-      route.query.type === "attack" ||
-      route.query.type === "defense" ||
-      route.query.type === "hybrid"
-    ) {
-      valueTypeQueryParam.value = route.query.type;
-
-      const baseFetched = await fetchBases();
-      data.value = baseFetched.data.value;
-      paginationState = data.value?.meta;
-    }
-    if (
-      Number(route.query.rating) &&
-      +route.query.rating >= 0 &&
-      +route.query.rating <= 5
-    ) {
-      valueRatingQueryParam.value = route.query.rating;
-      const baseFetched = await fetchBases();
-      data.value = baseFetched.data.value;
-      paginationState = data.value?.meta;
-    }
-  } else {
-    router.push({
-      path: route.path,
-      query: {
-        ...route.query,
-        page: 1,
-      },
-    });
-    paginationState.page = 1;
-    valueTypeQueryParam.value = "";
-    valueRatingQueryParam.value = "";
-    const baseFetched = await fetchBases();
-    data.value = baseFetched.data.value;
+const setPage = ({ page }: { page: number }) => {
+  if (page !== undefined && page <= 50 && page > 0) {
+    return page;
   }
+  return 1;
+};
+
+const mergeQueryParm = (queryParam) => {
+  queryParam.page = setPage(queryParam);
+  return {
+    ...route.query,
+    ...queryParam,
+  };
+};
+
+const synchQueryParamAndInput = (qp) => {
+  // check if the value is include of array
+  if (qp.type === "attack" || qp.type === "defensive" || qp.type === "hybrid") {
+    router.push({
+      path: route.path,
+      query: {
+        ...qp,
+      },
+    });
+    valueTypeQueryParam.value = qp["type"];
+  } else if (qp.rating >= 0 && qp.rating <= 5) {
+    router.push({
+      path: route.path,
+      query: {
+        ...qp,
+      },
+    });
+    valueRatingQueryParam.value = qp["rating"];
+  }
+};
+
+watchEffect(async () => {
+  let queryParams = {
+    ...route.query,
+    take: 8,
+    page: 1,
+  };
+
+  paginationState.page = setPage(route.query);
+
+  const newQueryParam = mergeQueryParm(queryParams);
+
+  synchQueryParamAndInput(newQueryParam);
+
+  const queryParamFiltered = pickProperties(newQueryParam, [
+    "page",
+    "type",
+    "rating",
+    "take",
+  ]);
+
+  try {
+    const baseFetched = await useFetchBase();
+
+    data.value = baseFetched;
+    paginationState = data.value.meta;
+  } catch (e) {}
 });
+
 const responseUserBaseApi = await useAsyncData("userBases", () => {
   return $fetch(
     `http://${config.public.backendUrl}:${config.public.backendPort}/${config.public.apiPrefix}/${config.public.apiVersion}/bases/users/${authStore.user.id}`
@@ -355,6 +376,7 @@ function setQueryParams(obj: any) {
   queryParams = {
     ...queryParams,
     ...obj,
+    take: 8,
   };
   const result = filterQueryParams(queryParams);
   setUrlQueryParams(result);
