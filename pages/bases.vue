@@ -232,14 +232,6 @@ let paginationState = reactive<MetaInformations>({
   take: 0,
 });
 
-router.push({
-  path: route.fullPath,
-  query: {
-    ...route.query,
-    page: 1,
-    take: 8,
-  },
-});
 const { data, pending } = await useAsyncData<ResponseApi<Base>>("bases", () => {
   return $fetch(
     `http://${config.public.backendUrl}:${config.public.backendPort}/${
@@ -252,7 +244,7 @@ paginationState = data?.value?.meta;
 // filterStore.setRouteParams(paginationState);
 
 const setPage = ({ page }: { page: number }) => {
-  if (page !== undefined && page <= 50 && page > 0) {
+  if (page !== undefined && page <= paginationState.pageCount && page > 0) {
     return page;
   }
   return 1;
@@ -295,7 +287,6 @@ watchEffect(async () => {
   };
 
   paginationState.page = setPage(route.query);
-
   const newQueryParam = mergeQueryParm(queryParams);
 
   synchQueryParamAndInput(newQueryParam);
