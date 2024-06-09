@@ -17,13 +17,22 @@
 ### Dashbord - Edit Base
 ![edit-form-base](https://github.com/Ninokeep/share-your-base-front/assets/121240813/f995617d-47b3-421d-b5a0-0f5b742f8e80)
 
+#### Confirmation
+![are-you-sure](https://github.com/Ninokeep/share-your-base-front/assets/121240813/75c2c437-c82c-4bf9-8d54-f7c0d7817ea2)
+
 ### Dashboard - Settings
 ![settings](https://github.com/Ninokeep/share-your-base-front/assets/121240813/e1c278e4-0f7a-4b68-bbc6-d23921caa5fe)
 
 ### Dashboard - Filter base
+
+#### By rating
 ![filter-rating](https://github.com/Ninokeep/share-your-base-front/assets/121240813/e540d5fc-3859-4ea2-8729-0f9b403f0f0a)
 
+#### By type
 ![type-db](https://github.com/Ninokeep/share-your-base-front/assets/121240813/821658d6-ba4a-47d2-a42b-31f4ea3811d3)
+
+#### No result 
+![filter-not-found](https://github.com/Ninokeep/share-your-base-front/assets/121240813/ae7f00ac-b4c5-4e92-a24c-d824ca51b36f)
 
 ### Dashboard - Pagination
 
