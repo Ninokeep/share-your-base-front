@@ -64,7 +64,7 @@
         type="submit"
         :disabled="isSubmitting || formHasChanges || formErrors"
       >
-        Update {{ formHasChanges }}
+        Update
       </Button>
     </form>
     <Toaster />

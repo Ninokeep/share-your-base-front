@@ -1,13 +1,5 @@
 <script lang="ts" setup>
 import {
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogClose,
-} from "@/components/ui/dialog";
-import {
   FormControl,
   FormField,
   FormItem,
@@ -16,39 +8,31 @@ import {
 } from "@/components/ui/form";
 import * as yup from "yup";
 
-import { reactive } from "vue";
+import { ref } from "vue";
 
-const openDialogClosed = ref(false);
-const cookie = useCookie("token");
-const config = useRuntimeConfig();
-const props = defineProps<{
-  name: string;
-  type: string;
-  costHQPerHour: number;
-  costMetalPerHour: number;
-  costWoodPerHour: number;
-  costStonePerHour: number;
-  costStone: number;
-  costWood: number;
-  costHQ: number;
-  costMetal: number;
-  id: number;
-}>();
-
-const base = reactive(props);
+const name = ref("");
+const type = ref("");
+const costHQPerHour = ref(0);
+const costMetalPerHour = ref(0);
+const costWoodPerHour = ref(0);
+const costStonePerHour = ref(0);
+const costStone = ref(0);
+const costWood = ref(0);
+const costHQ = ref(0);
+const costMetal = ref(0);
 
 const formSchema = toTypedSchema(
   yup.object({
-    name: yup.string().min(1).default(base.name),
-    type: yup.string().min(1).default(base.type),
-    costHQPerHour: yup.number().positive().default(base.costHQPerHour),
-    costMetalPerHour: yup.number().positive().default(base.costMetalPerHour),
-    costWoodPerHour: yup.number().positive().default(base.costWoodPerHour),
-    costStonePerHour: yup.number().positive().default(base.costStonePerHour),
-    costStone: yup.number().positive().default(base.costStone),
-    costWood: yup.number().positive().default(base.costWood),
-    costHQ: yup.number().positive().default(base.costHQ),
-    costMetal: yup.number().positive().default(base.costMetal),
+    name: yup.string().min(1),
+    type: yup.string().min(1),
+    costHQPerHour: yup.number().positive(),
+    costMetalPerHour: yup.number().positive(),
+    costWoodPerHour: yup.number().positive(),
+    costStonePerHour: yup.number().positive(),
+    costStone: yup.number().positive(),
+    costWood: yup.number().positive(),
+    costHQ: yup.number().positive(),
+    costMetal: yup.number().positive(),
   })
 );
 
@@ -56,72 +40,18 @@ const { handleSubmit, isSubmitting, values, errors } = useForm({
   validationSchema: formSchema,
 });
 
-const emit = defineEmits({
-  submit(payload: {
-    name: string;
-    type: string;
-    costHQPerHour: number;
-    costMetalPerHour: number;
-    costWoodPerHour: number;
-    costStonePerHour: number;
-    costStone: number;
-    costWood: number;
-    costHQ: number;
-    costMetal: number;
-    id: number;
-  }) {
-    return true;
-  },
-  updateFailed() {
-    return false;
-  },
-  updateSuccessful() {
-    return true;
-  },
-});
-
-const onSubmit = handleSubmit(async (formValues) => {
-  let formData = {};
-
-  for (const [key] of Object.entries(base)) {
-    if (base[key] !== formValues[key]) {
-      formData = { ...formData, [key]: formValues[key] };
-    }
-  }
-  const { data, error } = await useFetch(
-    `http://${config.public.backendUrl}:${config.public.backendPort}/${config.public.apiPrefix}/${config.public.apiVersion}/bases/${props.id}`,
-    {
-      method: "PUT",
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${cookie.value}`,
-      },
-    }
-  );
-  if (error.value) {
-    emit("updateFailed");
-  } else if (data.value) {
-    openDialogClosed.value = true;
-    emit("submit", data.value);
-    emit("updateSuccessful");
-  }
-});
-
-const formHasChanges = computed(() => {
-  const baseProps = omitProperties(base, ["id"]);
-  return compareTwoObjects(baseProps, values);
+const onSubmit = handleSubmit(async (formValue) => {
+  console.log(formValue);
 });
 </script>
 
 <template>
   <DialogContent class="sm:max-w-[850px]">
     <DialogHeader>
-      <DialogTitle>Edit the base</DialogTitle>
-      <DialogDescription>
-        Make changes to your base here. Click save when you're done.
-      </DialogDescription>
+      <DialogTitle>Create a Base</DialogTitle>
+      <DialogDescription class="py-1"> Configure your base </DialogDescription>
     </DialogHeader>
-    <form class="flex flex-col gap-4 py-4" @submit="onSubmit">
+    <form class="flex flex-col gap-4" @submit="onSubmit">
       <div class="flex gap-4">
         <FormField v-slot="{ componentField }" name="name" :model-value="name">
           <FormItem class="flex flex-col">
@@ -289,7 +219,7 @@ const formHasChanges = computed(() => {
           :model-value="costWood"
         >
           <FormItem class="flex flex-col">
-            <FormLabel class="text-sm font-medium">Cost Wood </FormLabel>
+            <FormLabel class="text-sm font-medium">Cost Wood</FormLabel>
             <div class="flex flex-col flex-2">
               <FormControl>
                 <Input type="number" v-bind="componentField" />
@@ -310,7 +240,7 @@ const formHasChanges = computed(() => {
             "
           >
             <Loader2 class="w-4 h-4 mr-2 animate-spin" v-if="isSubmitting" />
-            Save changes</Button
+            Create</Button
           >
         </DialogClose>
       </DialogFooter>

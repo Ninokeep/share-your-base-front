@@ -2,26 +2,42 @@
   <DashboardLayout>
     <h1 class="text-2xl font-bold px-4 py-2">Bases</h1>
     <p class="text-muted-foreground px-4">List of the bases.</p>
-    <div class="flex">
-      <Search @change="(data) => filterBase(data)" placeholder="Search name" />
-      <InputSearchType
-        :items="BASE_TYPES"
-        placeholder="Select a type"
-        :is-rating="false"
-        label="Type"
-        search-query-name="type"
-        @change:model-value="(element) => setQueryParams(element)"
-        :value="valueTypeQueryParam"
-      />
-      <InputSearchType
-        :items="RATINGS"
-        search-query-name="rating"
-        placeholder="Select a rating"
-        :is-rating="true"
-        label="Rating"
-        :value="valueRatingQueryParam"
-        @change:model-value="(element) => setQueryParams(element)"
-      />
+    <div class="flex items-center">
+      <div class="flex">
+        <Search
+          @change="(data) => filterBase(data)"
+          placeholder="Search name"
+        />
+        <InputSearchType
+          :items="BASE_TYPES"
+          placeholder="Select a type"
+          :is-rating="false"
+          label="Type"
+          search-query-name="type"
+          @change:model-value="(element) => setQueryParams(element)"
+          :value="valueTypeQueryParam"
+        />
+        <InputSearchType
+          :items="RATINGS"
+          search-query-name="rating"
+          placeholder="Select a rating"
+          :is-rating="true"
+          label="Rating"
+          :value="valueRatingQueryParam"
+          @change:model-value="(element) => setQueryParams(element)"
+        />
+      </div>
+      <div class="flex-1 flex justify-end mr-12">
+        <Dialog>
+          <DialogTrigger as-child>
+            <Button>
+              <Icon name="material-symbols:add" class="mr-1" size="17px"></Icon
+              >Base</Button
+            >
+            <AddFormBase />
+          </DialogTrigger>
+        </Dialog>
+      </div>
     </div>
     <Separator class="mt-4" />
     <Table>
@@ -86,7 +102,7 @@
                           'destructive'
                         )
                       "
-                      @update-successful="showToast('Updated', 'Sucessful')"
+                      @update-successful="showToast('Updated', 'Successful')"
                     />
                   </Dialog>
                 </DropdownMenuLabel>
@@ -211,6 +227,7 @@ import {
 } from "@/components/ui/pagination";
 import { useToastAction } from "#imports";
 import { useFetchBase } from "@/composables/useApi";
+import AddFormBase from "~/components/bases/addFormBase.vue";
 
 const { showToast } = useToastAction();
 const authStore = useAuthStore();
