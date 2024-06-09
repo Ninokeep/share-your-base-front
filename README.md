@@ -14,10 +14,13 @@
 ### Dashboard - Bases
 ![dashboard](https://github.com/Ninokeep/share-your-base-front/assets/121240813/da350d7d-abd5-40ba-9700-b2c694d7167d)
 
-### Dashbord - Edit Base
+### Dashboard - Edit or Remove
+![dropdown-edit](https://github.com/Ninokeep/share-your-base-front/assets/121240813/31084aae-30df-49fc-86d3-db74f509e476)
+
+#### Dashbord - Edit Base
 ![edit-form-base](https://github.com/Ninokeep/share-your-base-front/assets/121240813/f995617d-47b3-421d-b5a0-0f5b742f8e80)
 
-#### Confirmation
+#### Confirmation - Remove 
 ![are-you-sure](https://github.com/Ninokeep/share-your-base-front/assets/121240813/75c2c437-c82c-4bf9-8d54-f7c0d7817ea2)
 
 ### Dashboard - Settings
